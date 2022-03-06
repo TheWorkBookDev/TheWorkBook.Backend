@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32210.238
+MinimumVisualStudioVersion = 17.1.0.0
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TheWorkbook.API", "src\TheWorkbook.API\TheWorkbook.API.csproj", "{0F6A2E08-3734-47BB-8046-E78A7D7035CB}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TheWorkbook.API.Tests", "tests\TheWorkbook.API.Tests\TheWorkbook.API.Tests.csproj", "{E9D9AD05-DFBD-436D-897E-E45C34FC2C59}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0F6A2E08-3734-47BB-8046-E78A7D7035CB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0F6A2E08-3734-47BB-8046-E78A7D7035CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0F6A2E08-3734-47BB-8046-E78A7D7035CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0F6A2E08-3734-47BB-8046-E78A7D7035CB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E9D9AD05-DFBD-436D-897E-E45C34FC2C59}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E9D9AD05-DFBD-436D-897E-E45C34FC2C59}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E9D9AD05-DFBD-436D-897E-E45C34FC2C59}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E9D9AD05-DFBD-436D-897E-E45C34FC2C59}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {631B5356-052F-4079-AD81-A628EEC01377}
+	EndGlobalSection
+EndGlobal
