@@ -23,6 +23,7 @@
         ],
         "Environment": {
           "Variables": {
+            "EnableSwagger": "true",
             "LAMBDA_NET_SERIALIZER_DEBUG": "true",
             "Logging__LogLevel__Default": "Trace",
             "Logging__LogLevel__Microsoft": "Warning",

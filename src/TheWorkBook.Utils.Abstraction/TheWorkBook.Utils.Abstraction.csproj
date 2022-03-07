@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<EnableNETAnalyzers>true</EnableNETAnalyzers>
+		<EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+		<AnalysisLevel>latest</AnalysisLevel>
+	</PropertyGroup>
+
+</Project>

@@ -5,6 +5,7 @@
       "launchBrowser": true,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
+        "EnableSwagger": "true",
         "Logging__LogLevel__Default": "Trace",
         "Logging__LogLevel__Microsoft": "Warning",
         "Logging__LogLevel__Microsoft_Hosting_Lifetime": "Warning"
@@ -14,8 +15,8 @@
     "Mock Lambda Test Tool": {
       "commandName": "Executable",
       "commandLineArgs": "--port 5050",
-      "workingDirectory": ".\\bin\\$(Configuration)\\netcoreapp3.1",
-      "executablePath": "%USERPROFILE%\\.dotnet\\tools\\dotnet-lambda-test-tool-3.1.exe"
+      "workingDirectory": ".\\bin\\$(Configuration)\\net6.0",
+      "executablePath": "%USERPROFILE%\\.dotnet\\tools\\dotnet-lambda-test-tool-6.0.exe"
     }
   }
 }
