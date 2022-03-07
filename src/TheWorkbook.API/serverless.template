@@ -9,7 +9,7 @@
       "Type": "AWS::Serverless::Function",
       "Properties": {
         "Architectures" : ["arm64"],
-        "Handler": "TheWorkbook.API::TheWorkbook.API.LambdaEntryPoint::FunctionHandlerAsync",
+        "Handler": "TheWorkBook.API::TheWorkBook.API.LambdaEntryPoint::FunctionHandlerAsync",
         "Runtime": "dotnet6",
         "CodeUri": "",
         "MemorySize": 256,

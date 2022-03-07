@@ -13,7 +13,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using TheWorkBook.Utils.Abstraction;
 
-namespace TheWorkbook.API
+namespace TheWorkBook.API
 {
     public class Startup
     {

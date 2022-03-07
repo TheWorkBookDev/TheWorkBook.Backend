@@ -9,7 +9,7 @@
   "region": "",
   "configuration": "Release",
   "framework": "netcoreapp3.1",
-  "s3-prefix": "TheWorkbook.API/",
+  "s3-prefix": "TheWorkBook.API/",
   "template": "serverless.template",
   "template-parameters": ""
 }

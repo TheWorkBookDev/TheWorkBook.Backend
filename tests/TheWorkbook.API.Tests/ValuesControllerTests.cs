@@ -11,10 +11,10 @@ using Amazon.Lambda.APIGatewayEvents;
 
 using Newtonsoft.Json;
 
-using TheWorkbook.API;
+using TheWorkBook.API;
 
 
-namespace TheWorkbook.API.Tests
+namespace TheWorkBook.API.Tests
 {
     public class ValuesControllerTests
     {

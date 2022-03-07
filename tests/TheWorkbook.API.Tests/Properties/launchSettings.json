@@ -1,6 +1,6 @@
 {
   "profiles": {
-    "TheWorkbook.API.Tests": {
+    "TheWorkBook.API.Tests": {
       "commandName": "Project",
       "launchBrowser": true,
       "environmentVariables": {

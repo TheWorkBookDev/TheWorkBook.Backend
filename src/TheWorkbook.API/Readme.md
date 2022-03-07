@@ -58,12 +58,12 @@ If already installed check if new version is available.
 
 Execute unit tests
 ```
-    cd "TheWorkbook.API/test/TheWorkbook.API.Tests"
+    cd "TheWorkBook.API/test/TheWorkBook.API.Tests"
     dotnet test
 ```
 
 Deploy application
 ```
-    cd "TheWorkbook.API/src/TheWorkbook.API"
+    cd "TheWorkBook.API/src/TheWorkBook.API"
     dotnet lambda deploy-serverless
 ```

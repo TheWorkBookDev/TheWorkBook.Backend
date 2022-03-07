@@ -1,6 +1,6 @@
 {
   "profiles": {
-    "TheWorkbook.API": {
+    "TheWorkBook.API": {
       "commandName": "Project",
       "launchBrowser": true,
       "environmentVariables": {

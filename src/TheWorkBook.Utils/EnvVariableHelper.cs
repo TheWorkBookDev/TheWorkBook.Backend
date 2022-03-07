@@ -51,13 +51,13 @@ namespace TheWorkBook.Utils
             return value;
         }
 
-        public T GetVariable<T>(string variableName)
+        public T? GetVariable<T>(string variableName)
         {
             string value = GetVariable(variableName);
             return Change.To<T>(value);
         }
 
-        public T GetVariable<T>(string variableName, bool throwIfNull)
+        public T? GetVariable<T>(string variableName, bool throwIfNull)
         {
             string value = GetVariable(variableName, throwIfNull);
             return Change.To<T>(value);
