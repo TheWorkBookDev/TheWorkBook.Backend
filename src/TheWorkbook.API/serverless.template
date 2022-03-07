@@ -5,7 +5,7 @@
   "Parameters": {},
   "Conditions": {},
   "Resources": {
-    "AspNetCoreFunction": {
+    "TheWorkBookAPI": {
       "Type": "AWS::Serverless::Function",
       "Properties": {
         "Architectures" : ["arm64"],

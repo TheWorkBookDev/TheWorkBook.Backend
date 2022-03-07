@@ -11,5 +11,7 @@
   "framework": "netcoreapp3.1",
   "s3-prefix": "TheWorkBook.API/",
   "template": "serverless.template",
-  "template-parameters": ""
+  "template-parameters": "",
+  "s3-bucket": "theworkbook-apps",
+  "stack-name": "theworkbookapi-stack"
 }
