@@ -26,6 +26,6 @@
 		</PackageReference>
 	</ItemGroup>
 	<ItemGroup>
-		<ProjectReference Include="..\..\src\TheWorkbook.API\TheWorkBook.API.csproj" />
+		<ProjectReference Include="..\..\src\TheWorkBook.API\TheWorkBook.API.csproj" />
 	</ItemGroup>
 </Project>
