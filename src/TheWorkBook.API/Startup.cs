@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
@@ -76,7 +76,7 @@ namespace TheWorkBook.API
             }
 
             services.AddSwaggerGen(c => {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "The Work Book API", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "TheWorkBook API", Version = "v1" });
 
                 // Include 'SecurityScheme' to use JWT Authentication
                 var jwtSecurityScheme = new OpenApiSecurityScheme {
@@ -132,7 +132,6 @@ namespace TheWorkBook.API
             Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIOptions swaggerUIOptions = new Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIOptions();
             swaggerUIOptions.SwaggerEndpoint("v1/swagger.json", "TheWorkBook API v1");
             swaggerUIOptions.DisplayRequestDuration();
-            //swaggerUIOptions.InjectStylesheet("../style/swag.css");
 
             app.UseSwaggerUI(swaggerUIOptions);
         }

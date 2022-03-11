@@ -1,0 +1,14 @@
+﻿{
+  "solution": {
+    "path": "TheWorkBook.API.sln",
+    "projects": [
+        "src\\TheWorkBook.API\\TheWorkBook.API.csproj",
+        "src\\TheWorkBook.Data\\TheWorkBook.Data.csproj",
+        "src\\TheWorkBook.Model\\TheWorkBook.Model.csproj",
+        "src\\TheWorkBook.Service\\TheWorkBook.Service.csproj",
+        "src\\TheWorkBook.Service\\TheWorkBook.Service.Abstraction.csproj",
+        "src\\TheWorkBook.Utils\\TheWorkBook.Utils.csproj",
+        "src\\TheWorkBook.Utils.Abstraction\\TheWorkBook.Utils.Abstraction.csproj"
+    ]
+  }
+}

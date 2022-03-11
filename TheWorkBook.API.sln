@@ -26,6 +26,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TheWorkBook.Model", "src\Th
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TheWorkBook.Data", "src\TheWorkBook.Data\TheWorkBook.Data.csproj", "{A564D3C5-438A-40A7-A4CA-B07A362E55E9}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{086F444C-8652-456E-8A1F-4B43479C312E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheWorkBook.Service.Abstraction", "src\TheWorkBook.Service.Abstraction\TheWorkBook.Service.Abstraction.csproj", "{227EC594-30F1-4E47-B99E-380DD79FD250}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -60,6 +64,10 @@ Global
 		{A564D3C5-438A-40A7-A4CA-B07A362E55E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A564D3C5-438A-40A7-A4CA-B07A362E55E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A564D3C5-438A-40A7-A4CA-B07A362E55E9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{227EC594-30F1-4E47-B99E-380DD79FD250}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{227EC594-30F1-4E47-B99E-380DD79FD250}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{227EC594-30F1-4E47-B99E-380DD79FD250}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{227EC594-30F1-4E47-B99E-380DD79FD250}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -72,6 +80,8 @@ Global
 		{88E0269A-E580-4CB1-B767-409B3D269AE0} = {7EA12014-9260-4E8D-8E29-A5449F7B707E}
 		{377EA612-002D-416C-AEB9-18026FCF4080} = {7EA12014-9260-4E8D-8E29-A5449F7B707E}
 		{A564D3C5-438A-40A7-A4CA-B07A362E55E9} = {7EA12014-9260-4E8D-8E29-A5449F7B707E}
+		{086F444C-8652-456E-8A1F-4B43479C312E} = {7EA12014-9260-4E8D-8E29-A5449F7B707E}
+		{227EC594-30F1-4E47-B99E-380DD79FD250} = {7EA12014-9260-4E8D-8E29-A5449F7B707E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {631B5356-052F-4079-AD81-A628EEC01377}
