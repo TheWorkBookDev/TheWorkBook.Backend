@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TheWorkBook.Backend.Model
+namespace TheWorkBook.Shared.ServiceModels
 {
-    public class Proposal
+    public class SearchRequest
     {
     }
 }

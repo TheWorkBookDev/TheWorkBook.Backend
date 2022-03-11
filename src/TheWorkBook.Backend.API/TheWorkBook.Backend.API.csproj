@@ -19,10 +19,13 @@
 	<ItemGroup>
 		<PackageReference Include="Amazon.Lambda.AspNetCoreServer" Version="7.0.1" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.3" />
+		<PackageReference Include="Microsoft.AspNetCore.JsonPatch" Version="6.0.3" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="5.0.0" />
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.3.0" />
 	</ItemGroup>
 
 	<ItemGroup>
+	  <ProjectReference Include="..\TheWorkBook.Shared.Dto\TheWorkBook.Shared.Dto.csproj" />
 	  <ProjectReference Include="..\TheWorkBook.Utils.Abstraction\TheWorkBook.Utils.Abstraction.csproj" />
 	  <ProjectReference Include="..\TheWorkBook.Utils\TheWorkBook.Utils.csproj" />
 	</ItemGroup>

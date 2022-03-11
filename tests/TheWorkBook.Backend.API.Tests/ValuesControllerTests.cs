@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -11,10 +11,10 @@ using Amazon.Lambda.APIGatewayEvents;
 
 using Newtonsoft.Json;
 
-using TheWorkBook.API;
+using TheWorkBook.Backend.API;
 
 
-namespace TheWorkBook.API.Tests
+namespace TheWorkBook.Backend.API.Tests
 {
     public class ValuesControllerTests
     {

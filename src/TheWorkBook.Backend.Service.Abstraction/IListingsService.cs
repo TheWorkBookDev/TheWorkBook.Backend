@@ -1,4 +1,4 @@
-﻿namespace TheWorkBook.Service.Abstraction
+﻿namespace TheWorkBook.Backend.Service.Abstraction
 {
     public interface IListingsService
     {

@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TheWorkBook.Service.Abstraction;
+using TheWorkBook.Backend.Service.Abstraction;
 
-namespace TheWorkBook.Service
+namespace TheWorkBook.Backend.Service
 {
     public class ListingsService : BaseService, IListingsService
     {

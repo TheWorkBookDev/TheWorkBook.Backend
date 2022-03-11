@@ -11,9 +11,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using TheWorkBook.Utils;
 using TheWorkBook.Utils.Abstraction;
 
-namespace TheWorkBook.API
+namespace TheWorkBook.Backend.API
 {
     public class Startup
     {
@@ -39,7 +40,14 @@ namespace TheWorkBook.API
         {
             LogTrace("Entered ConfigureServices");
 
+            services.AddTransient<IEnvVariableHelper, EnvVariableHelper>();
+
             services.AddControllers();
+
+            services.AddApiVersioning(options =>
+            {
+                options.ReportApiVersions = true;
+            });
 
             AddSwaggerGenServices(services);
         }
