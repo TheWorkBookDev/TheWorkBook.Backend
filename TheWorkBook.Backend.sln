@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32210.238
 MinimumVisualStudioVersion = 17.1.0.0
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TheWorkBook.API", "src\TheWorkBook.API\TheWorkBook.API.csproj", "{0F6A2E08-3734-47BB-8046-E78A7D7035CB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TheWorkBook.Backend.API", "src\TheWorkBook.Backend.API\TheWorkBook.Backend.API.csproj", "{0F6A2E08-3734-47BB-8046-E78A7D7035CB}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TheWorkBook.API.Tests", "tests\TheWorkBook.API.Tests\TheWorkBook.API.Tests.csproj", "{E9D9AD05-DFBD-436D-897E-E45C34FC2C59}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TheWorkBook.Backend.API.Tests", "tests\TheWorkBook.Backend.API.Tests\TheWorkBook.Backend.API.Tests.csproj", "{E9D9AD05-DFBD-436D-897E-E45C34FC2C59}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C2FF2EA4-D3DF-474E-AE95-F6ADA8E0AB15}"
 	ProjectSection(SolutionItems) = preProject
@@ -20,15 +20,21 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TheWorkBook.Utils", "src\Th
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TheWorkBook.Utils.Abstraction", "src\TheWorkBook.Utils.Abstraction\TheWorkBook.Utils.Abstraction.csproj", "{4D09115B-CAFE-4FCE-97F6-93D0A8C28EF4}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TheWorkBook.Service", "src\TheWorkBook.Service\TheWorkBook.Service.csproj", "{88E0269A-E580-4CB1-B767-409B3D269AE0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TheWorkBook.Backend.Service", "src\TheWorkBook.Backend.Service\TheWorkBook.Backend.Service.csproj", "{88E0269A-E580-4CB1-B767-409B3D269AE0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TheWorkBook.Model", "src\TheWorkBook.Model\TheWorkBook.Model.csproj", "{377EA612-002D-416C-AEB9-18026FCF4080}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TheWorkBook.Backend.Model", "src\TheWorkBook.Backend.Model\TheWorkBook.Backend.Model.csproj", "{377EA612-002D-416C-AEB9-18026FCF4080}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TheWorkBook.Data", "src\TheWorkBook.Data\TheWorkBook.Data.csproj", "{A564D3C5-438A-40A7-A4CA-B07A362E55E9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TheWorkBook.Backend.Data", "src\TheWorkBook.Backend.Data\TheWorkBook.Backend.Data.csproj", "{A564D3C5-438A-40A7-A4CA-B07A362E55E9}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{086F444C-8652-456E-8A1F-4B43479C312E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheWorkBook.Service.Abstraction", "src\TheWorkBook.Service.Abstraction\TheWorkBook.Service.Abstraction.csproj", "{227EC594-30F1-4E47-B99E-380DD79FD250}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TheWorkBook.Service.Backend.Abstraction", "src\TheWorkBook.Backend.Service.Abstraction\TheWorkBook.Backend.Service.Abstraction.csproj", "{227EC594-30F1-4E47-B99E-380DD79FD250}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheWorkBook.Shared.Dto", "src\TheWorkBook.Shared.Dto\TheWorkBook.Shared.Dto.csproj", "{BAE71024-27EF-44A7-8AC2-F766D5800D5E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheWorkBook.Shared.ServiceModels", "src\TheWorkBook.Shared.ServiceModels\TheWorkBook.Shared.ServiceModels.csproj", "{882089C9-6013-494F-9CF3-D7AF015D1C25}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheWorkBook.Shared.ServiceClient", "src\TheWorkBook.Shared.ServiceClient\TheWorkBook.Shared.ServiceClient.csproj", "{7DA1D683-64CA-4D1C-AF58-817869B6484C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -68,6 +74,18 @@ Global
 		{227EC594-30F1-4E47-B99E-380DD79FD250}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{227EC594-30F1-4E47-B99E-380DD79FD250}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{227EC594-30F1-4E47-B99E-380DD79FD250}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BAE71024-27EF-44A7-8AC2-F766D5800D5E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BAE71024-27EF-44A7-8AC2-F766D5800D5E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BAE71024-27EF-44A7-8AC2-F766D5800D5E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BAE71024-27EF-44A7-8AC2-F766D5800D5E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{882089C9-6013-494F-9CF3-D7AF015D1C25}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{882089C9-6013-494F-9CF3-D7AF015D1C25}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{882089C9-6013-494F-9CF3-D7AF015D1C25}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{882089C9-6013-494F-9CF3-D7AF015D1C25}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7DA1D683-64CA-4D1C-AF58-817869B6484C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7DA1D683-64CA-4D1C-AF58-817869B6484C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7DA1D683-64CA-4D1C-AF58-817869B6484C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7DA1D683-64CA-4D1C-AF58-817869B6484C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -82,6 +100,9 @@ Global
 		{A564D3C5-438A-40A7-A4CA-B07A362E55E9} = {7EA12014-9260-4E8D-8E29-A5449F7B707E}
 		{086F444C-8652-456E-8A1F-4B43479C312E} = {7EA12014-9260-4E8D-8E29-A5449F7B707E}
 		{227EC594-30F1-4E47-B99E-380DD79FD250} = {7EA12014-9260-4E8D-8E29-A5449F7B707E}
+		{BAE71024-27EF-44A7-8AC2-F766D5800D5E} = {086F444C-8652-456E-8A1F-4B43479C312E}
+		{882089C9-6013-494F-9CF3-D7AF015D1C25} = {086F444C-8652-456E-8A1F-4B43479C312E}
+		{7DA1D683-64CA-4D1C-AF58-817869B6484C} = {086F444C-8652-456E-8A1F-4B43479C312E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {631B5356-052F-4079-AD81-A628EEC01377}

@@ -1,12 +1,12 @@
 ﻿{
   "solution": {
-    "path": "TheWorkBook.API.sln",
+    "path": "TheWorkBook.Backend.sln",
     "projects": [
-        "src\\TheWorkBook.API\\TheWorkBook.API.csproj",
-        "src\\TheWorkBook.Data\\TheWorkBook.Data.csproj",
-        "src\\TheWorkBook.Model\\TheWorkBook.Model.csproj",
-        "src\\TheWorkBook.Service\\TheWorkBook.Service.csproj",
-        "src\\TheWorkBook.Service\\TheWorkBook.Service.Abstraction.csproj",
+        "src\\TheWorkBook.Backend.API\\TheWorkBook.Backend.API.csproj",
+        "src\\TheWorkBook.Backend.Data\\TheWorkBook.Backend.Data.csproj",
+        "src\\TheWorkBook.Backend.Model\\TheWorkBook.Backend.Model.csproj",
+        "src\\TheWorkBook.Backend.Service\\TheWorkBook.Backend.Service.csproj",
+        "src\\TheWorkBook.Backend.Service\\TheWorkBook.Backend.Service.Abstraction.csproj",
         "src\\TheWorkBook.Utils\\TheWorkBook.Utils.csproj",
         "src\\TheWorkBook.Utils.Abstraction\\TheWorkBook.Utils.Abstraction.csproj"
     ]

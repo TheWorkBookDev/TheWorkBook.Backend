@@ -10,7 +10,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\TheWorkBook.Service.Abstraction\TheWorkBook.Service.Abstraction.csproj" />
+	  <ProjectReference Include="..\TheWorkBook.Backend.Service.Abstraction\TheWorkBook.Backend.Service.Abstraction.csproj" />
 	</ItemGroup>
 
 </Project>

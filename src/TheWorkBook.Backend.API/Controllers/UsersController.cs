@@ -8,7 +8,7 @@ namespace TheWorkBook.API.Controllers
     {
         // GET api/listings
         [HttpGet]
-        public IEnumerable<string> Get()
+        public IEnumerable<string> GetMyInfo()
         {
             return new string[] { "value1", "value2" };
         }
