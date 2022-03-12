@@ -36,7 +36,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheWorkBook.Shared.ServiceM
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheWorkBook.Shared.ServiceClient", "src\TheWorkBook.Shared.ServiceClient\TheWorkBook.Shared.ServiceClient.csproj", "{7DA1D683-64CA-4D1C-AF58-817869B6484C}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "utils", "utils", "{E96A4D35-A1C2-4D9A-9BB5-4832F6589E14}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "core", "core", "{E96A4D35-A1C2-4D9A-9BB5-4832F6589E14}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheWorkBook.AspNetCore.IdentityModel", "src\TheWorkBook.AspNetCore.IdentityModel\TheWorkBook.AspNetCore.IdentityModel.csproj", "{6DEDA727-F6E7-4C4D-AE09-CA45BC92EAFD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -88,6 +90,10 @@ Global
 		{7DA1D683-64CA-4D1C-AF58-817869B6484C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7DA1D683-64CA-4D1C-AF58-817869B6484C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7DA1D683-64CA-4D1C-AF58-817869B6484C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6DEDA727-F6E7-4C4D-AE09-CA45BC92EAFD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6DEDA727-F6E7-4C4D-AE09-CA45BC92EAFD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6DEDA727-F6E7-4C4D-AE09-CA45BC92EAFD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6DEDA727-F6E7-4C4D-AE09-CA45BC92EAFD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -106,6 +112,7 @@ Global
 		{882089C9-6013-494F-9CF3-D7AF015D1C25} = {086F444C-8652-456E-8A1F-4B43479C312E}
 		{7DA1D683-64CA-4D1C-AF58-817869B6484C} = {086F444C-8652-456E-8A1F-4B43479C312E}
 		{E96A4D35-A1C2-4D9A-9BB5-4832F6589E14} = {7EA12014-9260-4E8D-8E29-A5449F7B707E}
+		{6DEDA727-F6E7-4C4D-AE09-CA45BC92EAFD} = {E96A4D35-A1C2-4D9A-9BB5-4832F6589E14}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {631B5356-052F-4079-AD81-A628EEC01377}

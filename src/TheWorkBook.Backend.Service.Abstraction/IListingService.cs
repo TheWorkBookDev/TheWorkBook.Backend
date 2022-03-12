@@ -1,6 +1,6 @@
 ﻿namespace TheWorkBook.Backend.Service.Abstraction
 {
-    public interface IListingsService
+    public interface IListingService
     {
 
     }

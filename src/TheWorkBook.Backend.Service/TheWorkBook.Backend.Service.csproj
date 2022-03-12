@@ -10,7 +10,13 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <PackageReference Include="AutoMapper" Version="11.0.1" />
+	  <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.1" />
+	</ItemGroup>
+
+	<ItemGroup>
 	  <ProjectReference Include="..\TheWorkBook.Backend.Service.Abstraction\TheWorkBook.Backend.Service.Abstraction.csproj" />
+	  <ProjectReference Include="..\TheWorkBook.Utils.Abstraction\TheWorkBook.Utils.Abstraction.csproj" />
 	</ItemGroup>
 
 </Project>
