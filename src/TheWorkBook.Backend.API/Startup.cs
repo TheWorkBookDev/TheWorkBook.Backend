@@ -57,7 +57,8 @@ namespace TheWorkBook.Backend.API
         {
             bool useDeveloperExceptionPage = _envVariableHelper.GetVariable<bool>("UseDeveloperExceptionPage");
 
-            if (env.IsDevelopment() || useDeveloperExceptionPage) {
+            if (env.IsDevelopment() || useDeveloperExceptionPage)
+            {
                 app.UseDeveloperExceptionPage();
             }
 
@@ -79,15 +80,18 @@ namespace TheWorkBook.Backend.API
 
         public void AddSwaggerGenServices(IServiceCollection services)
         {
-            if (!_envVariableHelper.GetVariable<bool>("EnableSwagger")) {
+            if (!_envVariableHelper.GetVariable<bool>("EnableSwagger"))
+            {
                 return;
             }
 
-            services.AddSwaggerGen(c => {
+            services.AddSwaggerGen(c =>
+            {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "TheWorkBook API", Version = "v1" });
 
                 // Include 'SecurityScheme' to use JWT Authentication
-                var jwtSecurityScheme = new OpenApiSecurityScheme {
+                var jwtSecurityScheme = new OpenApiSecurityScheme
+                {
                     Scheme = "bearer",
                     BearerFormat = "JWT",
                     Name = "JWT Authentication",
@@ -95,7 +99,8 @@ namespace TheWorkBook.Backend.API
                     Type = SecuritySchemeType.Http,
                     Description = "Put **_ONLY_** your Bearer token on textbox below!",
 
-                    Reference = new OpenApiReference {
+                    Reference = new OpenApiReference
+                    {
                         Id = JwtBearerDefaults.AuthenticationScheme,
                         Type = ReferenceType.SecurityScheme
                     }
@@ -119,15 +124,18 @@ namespace TheWorkBook.Backend.API
 
         public void AddSwaggerMiddleware(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            if (!_envVariableHelper.GetVariable<bool>("EnableSwagger")) {
+            if (!_envVariableHelper.GetVariable<bool>("EnableSwagger"))
+            {
                 return;
             }
 
             app.UseStaticFiles();
 
-            app.UseSwagger(options => {
+            app.UseSwagger(options =>
+            {
                 //Workaround to use the Swagger UI "Try Out" functionality when deployed behind a reverse proxy (APIM) with API prefix /sub context configured
-                options.PreSerializeFilters.Add((swagger, httpReq) => {
+                options.PreSerializeFilters.Add((swagger, httpReq) =>
+                {
                     List<OpenApiServer> servers = new List<OpenApiServer>();
 
                     if (env.IsDevelopment())

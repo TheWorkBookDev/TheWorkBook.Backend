@@ -5,14 +5,46 @@
   "Parameters": {},
   "Conditions": {},
   "Resources": {
+    "ServerlessHttpApi" : {
+      "Type" : "AWS::ApiGatewayV2::ApiGatewayManagedOverrides",
+      "Properties" : { 
+        "ApiId" : "ServerlessHttpApi"
+     }
+   },
+    "ApiDomain": {
+      "Type": "AWS::ApiGatewayV2::DomainName",
+      "Properties": {
+        "DomainName": "api.theworkbook.ie",
+        "DomainNameConfigurations": [
+          {
+            "EndpointType": "REGIONAL",
+            "CertificateArn": "arn:aws:acm:eu-west-1:111754736799:certificate/f4f822a7-c82b-4c32-8b60-75593985f46d",
+            "CertificateName": "*.theworkbook.ie",
+            "SecurityPolicy": "TLS_1_2"
+          }
+        ]
+      }
+    },
+    "Mapping": {
+      "Type": "AWS::ApiGatewayV2::ApiMapping",
+      "Properties" : {  
+        "DomainName" : "api.theworkbook.ie",
+        "Stage" : {
+            "Ref": "ServerlessHttpApiApiGatewayDefaultStage"
+        },
+        "ApiId": {
+            "Ref": "ServerlessHttpApi"
+        }
+      },
+      "DependsOn" : "ApiDomain"
+    },
     "TheWorkBookAPI": {
       "Type": "AWS::Serverless::Function",
       "Properties": {
-        "Architectures" : ["arm64"],
         "Handler": "TheWorkBook.Backend.API::TheWorkBook.Backend.API.LambdaEntryPoint::FunctionHandlerAsync",
         "Runtime": "dotnet6",
         "CodeUri": "",
-        "MemorySize": 256,
+        "MemorySize": 2048,
         "Timeout": 30,
         "Description" : "{ReleaseVersion}",
         "VersionDescription" : "{ReleaseVersion}",
@@ -32,17 +64,23 @@
         },
         "Events": {
           "ProxyResource": {
-            "Type": "Api",
+            "Type": "HttpApi",
             "Properties": {
               "Path": "/{proxy+}",
-              "Method": "ANY"
+              "Method": "ANY",
+              "ApiId": {
+                "Ref": "ServerlessHttpApi"
+              }
             }
           },
           "RootResource": {
-            "Type": "Api",
+            "Type": "HttpApi",
             "Properties": {
               "Path": "/",
-              "Method": "ANY"
+              "Method": "ANY",
+              "ApiId": {
+                "Ref": "ServerlessHttpApi"
+              }
             }
           }
         }
