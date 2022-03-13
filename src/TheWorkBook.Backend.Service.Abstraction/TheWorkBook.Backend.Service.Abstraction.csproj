@@ -9,4 +9,9 @@
     <AnalysisLevel>latest</AnalysisLevel>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\TheWorkBook.Shared.Dto\TheWorkBook.Shared.Dto.csproj" />
+    <ProjectReference Include="..\TheWorkBook.Shared.ServiceModels\TheWorkBook.Shared.ServiceModels.csproj" />
+  </ItemGroup>
+
 </Project>

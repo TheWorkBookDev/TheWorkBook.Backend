@@ -4,7 +4,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using TheWorkBook.Backend.Service.Abstraction;
 using TheWorkBook.Shared.Dto;
+using TheWorkBook.Shared.ServiceModels;
 using TheWorkBook.Utils.Abstraction;
 
 namespace TheWorkBook.Backend.API.Controllers
@@ -14,11 +16,14 @@ namespace TheWorkBook.Backend.API.Controllers
     [Produces("application/json")]
     public class UserController : BaseController
     {
+        private readonly IUserService _userService;
+
         public UserController(ILogger<UserController> logger,
-            IEnvVariableHelper envVariableHelper)
+            IEnvVariableHelper envVariableHelper,
+            IUserService userService)
             : base(logger, envVariableHelper)
         {
-
+            _userService = userService;
         }
 
         //[Authorize(Policy = "ext.user.api.policy")]
@@ -44,14 +49,13 @@ namespace TheWorkBook.Backend.API.Controllers
         [HttpPost]
         [ActionName("register")]
         [Consumes(MediaTypeNames.Application.Json)]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> Register([FromBody] UserDto userInfo)
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        public async Task<IActionResult> Register([FromBody] CreateUserRequest createUserRequest)
         {
-            if (userInfo == null) return BadRequest();
+            if (createUserRequest == null) return BadRequest();
 
-            //int userKey = ApplicationUser.UserKey.Value;
-            //await userService.UpdateUserAsync(userKey, patchDocUserDto);
-            return Ok();
+            await _userService.RegisterUser(createUserRequest);
+            return Created("", "");
         }
 
         //[Authorize(Policy = "ext.user.api.policy")]

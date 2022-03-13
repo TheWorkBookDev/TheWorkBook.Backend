@@ -6,6 +6,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using TheWorkBook.AspNetCore.IdentityModel;
 using TheWorkBook.Backend.Data;
+using TheWorkBook.Backend.Service;
+using TheWorkBook.Backend.Service.Abstraction;
 using TheWorkBook.Utils;
 using TheWorkBook.Utils.Abstraction;
 using TheWorkBook.Utils.Abstraction.ParameterStore;
@@ -36,9 +38,16 @@ namespace TheWorkBook.Backend.API
         {
             LogTrace("Entered ConfigureServices");
 
+            // Add automapper.
+            services.AddAutoMapper(typeof(Startup));
+
             services.AddTransient<IEnvVariableHelper, EnvVariableHelper>();
 
             services.AddScoped<IApplicationUser, ApplicationUser>();
+
+            // Register Services
+            services.AddTransient<IListingService, ListingService>();
+            services.AddTransient<IUserService, UserService>();
 
             ConfigureDatabaseContext(services);
             

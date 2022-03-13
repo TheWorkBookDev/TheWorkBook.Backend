@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using Microsoft.Extensions.Logging;
 using TheWorkBook.Utils.Abstraction;
+using TheWorkBook.Backend.Data;
+using TheWorkBook.AspNetCore.IdentityModel;
 
 namespace TheWorkBook.Backend.Service
 {
@@ -8,17 +10,20 @@ namespace TheWorkBook.Backend.Service
     {
         protected readonly IMapper Mapper;
         protected readonly ILogger<BaseService> Logger;
-        //protected readonly IApplicationUser ApplicationUser;
+        protected readonly IApplicationUser ApplicationUser;
         protected readonly IEnvVariableHelper EnvVariableHelper;
+        protected readonly TheWorkBookContext TheWorkBookContext;
 
         public BaseService(IMapper mapper, ILogger<BaseService> logger,
-           //IApplicationUser applicationUser,
-           IEnvVariableHelper envVariableHelper)
+           IApplicationUser applicationUser,
+           IEnvVariableHelper envVariableHelper,
+           TheWorkBookContext theWorkBookContext)
         {
             Mapper = mapper;
             Logger = logger;
-            //ApplicationUser = applicationUser;
+            ApplicationUser = applicationUser;
             EnvVariableHelper = envVariableHelper;
+            TheWorkBookContext = theWorkBookContext;
         }
     }
 }
