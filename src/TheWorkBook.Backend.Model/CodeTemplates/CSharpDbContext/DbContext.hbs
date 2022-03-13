@@ -1,0 +1,24 @@
+﻿{{> dbimports}}
+using TheWorkBook.Backend.Model;
+
+namespace TheWorkBook.Backend.Data
+{
+    public partial class {{class}} : DbContext
+    {
+{{{> dbsets}}}
+{{#if entity-type-errors}}
+{{#each entity-type-errors}}
+        {{{entity-type-error}}}
+{{/each}}
+
+{{/if}}
+
+{{{> dbconstructor}}}
+
+{{#unless suppress-on-configuring}}
+{{{> dbonconfiguring}}}
+
+{{/unless}}
+{{{on-model-creating}}}
+    }
+}

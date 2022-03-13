@@ -27,6 +27,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\TheWorkBook.AspNetCore.IdentityModel\TheWorkBook.AspNetCore.IdentityModel.csproj" />
+    <ProjectReference Include="..\TheWorkBook.Backend.Data\TheWorkBook.Backend.Data.csproj" />
     <ProjectReference Include="..\TheWorkBook.Backend.Model\TheWorkBook.Backend.Model.csproj" />
     <ProjectReference Include="..\TheWorkBook.Backend.Service.Abstraction\TheWorkBook.Backend.Service.Abstraction.csproj" />
     <ProjectReference Include="..\TheWorkBook.Backend.Service\TheWorkBook.Backend.Service.csproj" />

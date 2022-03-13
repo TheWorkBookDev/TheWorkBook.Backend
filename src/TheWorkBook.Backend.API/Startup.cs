@@ -1,18 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Reflection;
+﻿using System.Reflection;
 using Amazon.Lambda.Core;
+using Amazon.SimpleSystemsManagement;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using TheWorkBook.AspNetCore.IdentityModel;
+using TheWorkBook.Backend.Data;
 using TheWorkBook.Utils;
 using TheWorkBook.Utils.Abstraction;
+using TheWorkBook.Utils.Abstraction.ParameterStore;
 
 namespace TheWorkBook.Backend.API
 {
@@ -42,6 +38,12 @@ namespace TheWorkBook.Backend.API
 
             services.AddTransient<IEnvVariableHelper, EnvVariableHelper>();
 
+            services.AddScoped<IApplicationUser, ApplicationUser>();
+
+            ConfigureDatabaseContext(services);
+            
+            services.AddHttpContextAccessor();
+
             services.AddControllers();
 
             services.AddApiVersioning(options =>
@@ -50,6 +52,17 @@ namespace TheWorkBook.Backend.API
             });
 
             AddSwaggerGenServices(services);
+        }
+
+        public void ConfigureDatabaseContext(IServiceCollection services)
+        {
+            //DB Connection
+            using IParameterStore parameterStore = GetParameterStore(Configuration);
+
+            LogTrace("Got IParameterStore object");
+
+            IParameter connectionString = parameterStore.GetParameter("/database/app-connection-string");
+            services.AddDbContext<TheWorkBookContext>(options => options.UseSqlServer(connectionString.Value));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline
@@ -75,7 +88,7 @@ namespace TheWorkBook.Backend.API
                 endpoints.MapControllers();
                 endpoints.MapGet("/", async context =>
                 {
-                    await context.Response.WriteAsync("Welcome to running ASP.NET Core on AWS Lambda");
+                    await context.Response.WriteAsync("Nothing to see here, please move along :-)");
                 });
             });
         }
@@ -98,7 +111,7 @@ namespace TheWorkBook.Backend.API
                         {
                             Name = "Ronan Farrell",
                             Email = "ronanfarrell@live.ie"
-                        }, 
+                        },
                         Description = "This API provides the backend functionality needed for TheWorkBook app."
                     });
 
@@ -170,6 +183,39 @@ namespace TheWorkBook.Backend.API
             swaggerUIOptions.DisplayRequestDuration();
 
             app.UseSwaggerUI(swaggerUIOptions);
+        }
+
+        private IParameterStore GetParameterStore(IConfiguration configuration)
+        {
+            LogTrace("Entered GetParameterStore()");
+
+            bool useSpecifiedParamStoreCreds = 
+                _envVariableHelper.GetVariable("UseSpecifiedParamStoreCreds") != null
+                    && _envVariableHelper.GetVariable("UseSpecifiedParamStoreCreds")
+                        .Equals("true", StringComparison.InvariantCultureIgnoreCase);
+
+            LogTrace($"useSpecifiedParamStoreCreds: {useSpecifiedParamStoreCreds}");
+
+            AmazonSimpleSystemsManagementClient client;
+
+            if (useSpecifiedParamStoreCreds)
+            {
+                Amazon.RegionEndpoint regionEndpoint = Amazon.RegionEndpoint.GetBySystemName(_envVariableHelper.GetVariable("AWSRegion", true));
+
+                LogTrace($"instantiating AmazonSimpleSystemsManagementClient: {useSpecifiedParamStoreCreds}");
+
+                client = new AmazonSimpleSystemsManagementClient(_envVariableHelper.GetVariable("ParamStoreConnectionKey", true),
+                    _envVariableHelper.GetVariable("ParamStoreConnectionSecret", true), regionEndpoint);
+            }
+            else
+            {
+                LogTrace($"instantiating default AmazonSimpleSystemsManagementClient: {useSpecifiedParamStoreCreds}");
+                client = new AmazonSimpleSystemsManagementClient();
+            }
+
+            LogTrace("'AmazonSimpleSystemsManagementClient' client instantiated");
+
+            return new TheWorkBook.Utils.ParameterStore.ParameterStore(client);
         }
 
         private void LogTrace(string logMessage)
