@@ -47,14 +47,15 @@
         "Runtime": "dotnet6",
         "CodeUri": "",
         "MemorySize": 2048,
-        "Timeout": 30,
+        "Timeout": 15,
         "Description" : "#{ReleaseVersion}#",
         "VersionDescription" : "#{ReleaseVersion}#",
         "Role": null,
         "Policies": [
           "AmazonRDSFullAccess",
+          "AmazonSSMReadOnlyAccess",
           "AWSLambda_FullAccess",
-          "AmazonSSMReadOnlyAccess"
+          "AWSLambdaVPCAccessExecutionRole"
         ],
         "Environment": {
           "Variables": {
@@ -86,6 +87,16 @@
               }
             }
           }
+        },
+        "VpcConfig": {
+          "SecurityGroupIds": [
+              "sg-08eef6f199963de4b"
+          ],
+          "SubnetIds": [
+              "subnet-0f983d4d6eae1a2a9",
+              "subnet-0671ac1705a89c414",
+              "subnet-04733ab6a67ed6cd4"
+          ]
         }
       }
     }
