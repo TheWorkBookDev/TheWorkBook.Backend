@@ -41,11 +41,25 @@ namespace TheWorkBook.Backend.API.Controllers
         }
 
         //[Authorize(Policy = "ext.user.api.policy")]
-        [HttpPatch]
-        [ActionName("updateMyInfo")]
+        [HttpPost]
+        [ActionName("register")]
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> UpdateMyUser([FromBody] JsonPatchDocument<UserDto> patchDocUserDto)
+        public async Task<IActionResult> Register([FromBody] UserDto userInfo)
+        {
+            if (userInfo == null) return BadRequest();
+
+            //int userKey = ApplicationUser.UserKey.Value;
+            //await userService.UpdateUserAsync(userKey, patchDocUserDto);
+            return Ok();
+        }
+
+        //[Authorize(Policy = "ext.user.api.policy")]
+        [HttpPatch]
+        [ActionName("update")]
+        [Consumes(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> Update([FromBody] JsonPatchDocument<UserDto> patchDocUserDto)
         {
             if (patchDocUserDto == null) return BadRequest();
 
