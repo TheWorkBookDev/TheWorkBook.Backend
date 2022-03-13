@@ -53,7 +53,8 @@
         "Role": null,
         "Policies": [
           "AmazonRDSFullAccess",
-          "AWSLambda_FullAccess"
+          "AWSLambda_FullAccess",
+          "AmazonSSMReadOnlyAccess"
         ],
         "Environment": {
           "Variables": {
