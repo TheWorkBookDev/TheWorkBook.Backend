@@ -48,8 +48,8 @@
         "CodeUri": "",
         "MemorySize": 2048,
         "Timeout": 30,
-        "Description" : "{ReleaseVersion}",
-        "VersionDescription" : "{ReleaseVersion}",
+        "Description" : "#{ReleaseVersion}#",
+        "VersionDescription" : "#{ReleaseVersion}#",
         "Role": null,
         "Policies": [
           "AmazonRDSFullAccess",

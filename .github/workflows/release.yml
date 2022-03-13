@@ -11,7 +11,7 @@ env:
   DOTNET_CLI_TELEMETRY_OPTOUT: true
   DOTNET_NOLOGO: true    
 jobs:
-  build:
+  release:
 
     runs-on: ubuntu-latest
 
@@ -36,17 +36,8 @@ jobs:
         echo "version=${version}" | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf-8 -Append      
       shell: pwsh
     - name: Set version for CloudFormation
-      uses: jacobtomlinson/gha-find-replace@v2
-      with:
-        find: "{ReleaseVersion}"
-        replace: "$version"
-        include: "**serverless.template"
-    - name: Set version for build
-      uses: jacobtomlinson/gha-find-replace@v2
-      with:
-        find: "{ReleaseVersion}"
-        replace: "$version"
-        include: "**aws-lambda-tools-defaults.json"
+      working-directory: ./src/TheWorkBook.Backend.API
+      run: find *.template -type f -exec sed -i ''s/#{ReleaseVersion}#/${{ env.version }}/g'' {} \;
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
