@@ -35,13 +35,7 @@ namespace TheWorkBook.Backend.API.Controllers
         [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetMyInfo()
         {
-            UserDto user = new UserDto
-            {
-                FirstName = "Ronan",
-                LastName = "Farrell",
-                Email = "ronanfarrell@live.ie",
-                Mobile = "083-4508108"
-            };
+            UserDto user = await _userService.GetUser(1);
             return Ok(user);
         }
 
