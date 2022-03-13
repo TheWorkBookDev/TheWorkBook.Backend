@@ -35,9 +35,12 @@ jobs:
         $version = $ref.Substring($ref.LastIndexOf("/") + 2)
         echo "version=${version}" | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf-8 -Append      
       shell: pwsh
-    - name: Set version for CloudFormation
+    - name: Set version in CloudFormation
       working-directory: ./src/TheWorkBook.Backend.API
-      run: find *.template -type f -exec sed -i ''s/#{ReleaseVersion}#/${{ env.version }}/g'' {} \;
+      run: find *.template -type f -exec sed -i ''s/#{ReleaseVersion}#/v${{ env.version }}/g'' {} \;
+    - name: Set version in aws-lambda-tools-defaults
+      working-directory: ./src/TheWorkBook.Backend.API
+      run: find aws-lambda-tools-defaults.json -type f -exec sed -i ''s/#{ReleaseVersion}#/${{ env.version }}/g'' {} \;  
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
