@@ -70,9 +70,11 @@ namespace TheWorkBook.Backend.API
 
             app.UseAuthorization();
 
-            app.UseEndpoints(endpoints => {
+            app.UseEndpoints(endpoints =>
+            {
                 endpoints.MapControllers();
-                endpoints.MapGet("/", async context => {
+                endpoints.MapGet("/", async context =>
+                {
                     await context.Response.WriteAsync("Welcome to running ASP.NET Core on AWS Lambda");
                 });
             });
@@ -87,7 +89,18 @@ namespace TheWorkBook.Backend.API
 
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "TheWorkBook API", Version = "v1" });
+                c.SwaggerDoc("v1",
+                    new OpenApiInfo
+                    {
+                        Title = "TheWorkBook API",
+                        Version = "v1",
+                        Contact = new OpenApiContact
+                        {
+                            Name = "Ronan Farrell",
+                            Email = "ronanfarrell@live.ie"
+                        }, 
+                        Description = "This API provides the backend functionality needed for TheWorkBook app."
+                    });
 
                 // Include 'SecurityScheme' to use JWT Authentication
                 var jwtSecurityScheme = new OpenApiSecurityScheme
@@ -110,8 +123,8 @@ namespace TheWorkBook.Backend.API
 
                 c.AddSecurityRequirement(new OpenApiSecurityRequirement
                 {
-                        { jwtSecurityScheme, Array.Empty<string>() }
-                    });
+                    { jwtSecurityScheme, Array.Empty<string>() }
+                });
 
                 //** Set the comments path for the Swagger JSON and UI.**
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
@@ -136,10 +149,17 @@ namespace TheWorkBook.Backend.API
                 //Workaround to use the Swagger UI "Try Out" functionality when deployed behind a reverse proxy (APIM) with API prefix /sub context configured
                 options.PreSerializeFilters.Add((swagger, httpReq) =>
                 {
-                    List<OpenApiServer> servers = new List<OpenApiServer>();
+                    List<OpenApiServer> servers = new();
 
                     if (env.IsDevelopment())
+                    {
                         servers.Add(new OpenApiServer { Url = "https://localhost:62129" });
+                        servers.Add(new OpenApiServer { Url = "https://api.theworkbook.ie" });
+                    }
+                    else
+                    {
+                        servers.Add(new OpenApiServer { Url = "https://api.theworkbook.ie" });
+                    }
 
                     swagger.Servers = servers;
                 });
@@ -154,7 +174,8 @@ namespace TheWorkBook.Backend.API
 
         private void LogTrace(string logMessage)
         {
-            if (traceEnabled) {
+            if (traceEnabled)
+            {
                 LambdaLogger.Log(logMessage);
             }
         }
