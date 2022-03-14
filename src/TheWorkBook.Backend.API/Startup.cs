@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using Amazon.Lambda.Core;
 using Amazon.SimpleSystemsManagement;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
@@ -61,12 +62,16 @@ namespace TheWorkBook.Backend.API
             });
 
             AddSwaggerGenServices(services);
+
+            services.AddDataProtection()
+                .SetApplicationName("TheWorkBook")
+                .PersistKeysToAWSSystemsManager($"/DataProtection");
         }
 
         public void ConfigureDatabaseContext(IServiceCollection services)
         {
             //DB Connection
-            using IParameterStore parameterStore = GetParameterStore(Configuration);
+            using IParameterStore parameterStore = GetParameterStore();
 
             LogTrace("Got IParameterStore object");
 
@@ -197,7 +202,7 @@ namespace TheWorkBook.Backend.API
             app.UseSwaggerUI(swaggerUIOptions);
         }
 
-        private IParameterStore GetParameterStore(IConfiguration configuration)
+        private IParameterStore GetParameterStore()
         {
             LogTrace("Entered GetParameterStore()");
 
