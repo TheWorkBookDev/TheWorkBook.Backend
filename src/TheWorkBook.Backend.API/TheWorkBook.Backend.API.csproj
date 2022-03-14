@@ -25,6 +25,7 @@
     <PackageReference Include="Microsoft.AspNetCore.JsonPatch" Version="6.0.3" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="5.0.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.3.0" />
+    <PackageReference Include="TheWorkBook.Utils" Version="1.0.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -35,7 +36,5 @@
     <ProjectReference Include="..\TheWorkBook.Backend.Service\TheWorkBook.Backend.Service.csproj" />
     <ProjectReference Include="..\TheWorkBook.Shared.Dto\TheWorkBook.Shared.Dto.csproj" />
     <ProjectReference Include="..\TheWorkBook.Shared.ServiceModels\TheWorkBook.Shared.ServiceModels.csproj" />
-    <ProjectReference Include="..\TheWorkBook.Utils.Abstraction\TheWorkBook.Utils.Abstraction.csproj" />
-    <ProjectReference Include="..\TheWorkBook.Utils\TheWorkBook.Utils.csproj" />
   </ItemGroup>
 </Project>
