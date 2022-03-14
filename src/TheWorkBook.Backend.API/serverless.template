@@ -42,7 +42,7 @@
       "Type": "AWS::Serverless::Function",
       "Properties": {
         "Architectures": [ "arm64" ],
-        "FunctionName": { "Fn::Sub": "theworkbookapi" },
+        "FunctionName": { "Fn::Sub": "api-services" },
         "Handler": "TheWorkBook.Backend.API::TheWorkBook.Backend.API.LambdaEntryPoint::FunctionHandlerAsync",
         "Runtime": "dotnet6",
         "CodeUri": "",
