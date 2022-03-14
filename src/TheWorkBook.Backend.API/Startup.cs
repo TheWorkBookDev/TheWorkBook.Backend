@@ -72,11 +72,9 @@ namespace TheWorkBook.Backend.API
 
             IParameter connectionStringParam = parameterStore.GetParameter("/database/app-connection-string");
 
-            string connectionString = connectionStringParam.Value;
+            LogTrace("Got connectionStringParam object");
 
-            LogTrace("connection string: " + connectionString);
-
-            services.AddDbContext<TheWorkBookContext>(options => options.UseSqlServer(connectionString));
+            services.AddDbContext<TheWorkBookContext>(options => options.UseSqlServer(connectionStringParam.Value));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline
