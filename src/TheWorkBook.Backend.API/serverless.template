@@ -10,7 +10,7 @@
       "Properties" : { 
         "ApiId" : "ServerlessHttpApi"
      }
-   },
+    },
     "ApiDomain": {
       "Type": "AWS::ApiGatewayV2::DomainName",
       "Properties": {
@@ -52,7 +52,6 @@
         "VersionDescription" : "#{ReleaseVersion}#",
         "Role": null,
         "Policies": [
-          "AmazonRDSFullAccess",
           "AmazonSSMReadOnlyAccess",
           "AWSLambda_FullAccess",
           "AWSLambdaVPCAccessExecutionRole"
