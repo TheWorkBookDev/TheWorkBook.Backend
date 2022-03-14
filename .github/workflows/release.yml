@@ -21,6 +21,8 @@ jobs:
       uses: actions/setup-dotnet@v2
       with:
         dotnet-version: 6.0.x
+    - name: Add Nuget Feed
+      run:  dotnet nuget add source ${{ secrets.GITHUBNUGETURL }} -n github -u ${{ secrets.GITHUBUSER }} -p ${{ secrets.GITHUBREADPACKAGES }} --store-password-in-clear-text  
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:
