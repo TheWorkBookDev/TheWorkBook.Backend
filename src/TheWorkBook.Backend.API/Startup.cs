@@ -1,18 +1,20 @@
 ﻿using System.Reflection;
 using Amazon.Lambda.Core;
 using Amazon.SimpleSystemsManagement;
-using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using TheWorkBook.AspNetCore.IdentityModel;
+using TheWorkBook.Backend.API.Extensions;
+using TheWorkBook.Backend.API.Helper;
 using TheWorkBook.Backend.Data;
 using TheWorkBook.Backend.Service;
 using TheWorkBook.Backend.Service.Abstraction;
 using TheWorkBook.Utils;
 using TheWorkBook.Utils.Abstraction;
 using TheWorkBook.Utils.Abstraction.ParameterStore;
-using Microsoft.IdentityModel.Tokens;
 
 namespace TheWorkBook.Backend.API
 {
@@ -43,6 +45,7 @@ namespace TheWorkBook.Backend.API
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseSwaggerAuthorized();
             AddSwaggerMiddleware(app, env);
 
             app.UseHttpsRedirection();
@@ -83,7 +86,8 @@ namespace TheWorkBook.Backend.API
             services.AddTransient<IUserService, UserService>();
 
             //DB Connection
-            using IParameterStore parameterStore = GetParameterStore();
+            ParameterStoreHelper parameterStoreHelper = new ParameterStoreHelper(_envVariableHelper);
+            using IParameterStore parameterStore = parameterStoreHelper.GetParameterStore();
 
             ConfigureDatabaseContext(services, parameterStore);
             ConfigureAuthentication(services, parameterStore);
@@ -200,6 +204,7 @@ namespace TheWorkBook.Backend.API
 
             app.UseSwaggerUI(swaggerUIOptions);
         }
+
         private void ConfigureAuthentication(IServiceCollection services, IParameterStore parameterStore)
         {
             IParameterList parameterList = parameterStore.GetParameterListByPath("/auth/");
@@ -234,38 +239,6 @@ namespace TheWorkBook.Backend.API
             LogTrace("Got connectionStringParam object");
 
             services.AddDbContext<TheWorkBookContext>(options => options.UseSqlServer(connectionStringParam.Value));
-        }
-        private IParameterStore GetParameterStore()
-        {
-            LogTrace("Entered GetParameterStore()");
-
-            bool useSpecifiedParamStoreCreds = 
-                _envVariableHelper.GetVariable("UseSpecifiedParamStoreCreds") != null
-                    && _envVariableHelper.GetVariable("UseSpecifiedParamStoreCreds")
-                        .Equals("true", StringComparison.InvariantCultureIgnoreCase);
-
-            LogTrace($"useSpecifiedParamStoreCreds: {useSpecifiedParamStoreCreds}");
-
-            AmazonSimpleSystemsManagementClient client;
-
-            if (useSpecifiedParamStoreCreds)
-            {
-                Amazon.RegionEndpoint regionEndpoint = Amazon.RegionEndpoint.GetBySystemName(_envVariableHelper.GetVariable("AWSRegion", true));
-
-                LogTrace($"instantiating AmazonSimpleSystemsManagementClient: {useSpecifiedParamStoreCreds}");
-
-                client = new AmazonSimpleSystemsManagementClient(_envVariableHelper.GetVariable("ParamStoreConnectionKey", true),
-                    _envVariableHelper.GetVariable("ParamStoreConnectionSecret", true), regionEndpoint);
-            }
-            else
-            {
-                LogTrace($"instantiating default AmazonSimpleSystemsManagementClient: {useSpecifiedParamStoreCreds}");
-                client = new AmazonSimpleSystemsManagementClient();
-            }
-
-            LogTrace("'AmazonSimpleSystemsManagementClient' client instantiated");
-
-            return new TheWorkBook.Utils.ParameterStore.ParameterStore(client);
         }
 
         private void LogTrace(string logMessage)
