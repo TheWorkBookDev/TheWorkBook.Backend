@@ -1,4 +1,5 @@
 ﻿using System.Net.Mime;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using TheWorkBook.Shared.Dto;
@@ -17,6 +18,7 @@ namespace TheWorkBook.Backend.API.Controllers
 
         }
 
+        [Authorize(Policy = "ext.user.api.policy")]
         [HttpPost]
         [ActionName("add")]
         [Consumes(MediaTypeNames.Application.Json)]
@@ -28,6 +30,7 @@ namespace TheWorkBook.Backend.API.Controllers
             return Ok();
         }
 
+        [AllowAnonymous]
         [HttpGet]
         [ActionName("get")]
         [Consumes(MediaTypeNames.Application.Json)]
@@ -40,6 +43,7 @@ namespace TheWorkBook.Backend.API.Controllers
             return Ok(listing);
         }
 
+        [Authorize(Policy = "ext.user.api.policy")]
         [HttpPatch]
         [ActionName("update")]
         [Consumes(MediaTypeNames.Application.Json)]

@@ -12,6 +12,7 @@ using TheWorkBook.Backend.Service.Abstraction;
 using TheWorkBook.Utils;
 using TheWorkBook.Utils.Abstraction;
 using TheWorkBook.Utils.Abstraction.ParameterStore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace TheWorkBook.Backend.API
 {
@@ -42,6 +43,10 @@ namespace TheWorkBook.Backend.API
             // Add automapper.
             services.AddAutoMapper(typeof(Startup));
 
+            services.AddDataProtection()
+                .SetApplicationName("TheWorkBook")
+                .PersistKeysToAWSSystemsManager($"/DataProtection");
+
             services.AddTransient<IEnvVariableHelper, EnvVariableHelper>();
 
             services.AddScoped<IApplicationUser, ApplicationUser>();
@@ -50,8 +55,12 @@ namespace TheWorkBook.Backend.API
             services.AddTransient<IListingService, ListingService>();
             services.AddTransient<IUserService, UserService>();
 
-            ConfigureDatabaseContext(services);
-            
+            //DB Connection
+            using IParameterStore parameterStore = GetParameterStore();
+
+            ConfigureDatabaseContext(services, parameterStore);
+            ConfigureAuthentication(services, parameterStore);
+
             services.AddHttpContextAccessor();
 
             services.AddControllers();
@@ -59,20 +68,22 @@ namespace TheWorkBook.Backend.API
             services.AddApiVersioning(options =>
             {
                 options.ReportApiVersions = true;
+                options.DefaultApiVersion = new Microsoft.AspNetCore.Mvc.ApiVersion(1, 0);
+            });
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("ext.user.api.policy", policyUser =>
+                {
+                    policyUser.RequireClaim("scope", "api");
+                });
             });
 
             AddSwaggerGenServices(services);
-
-            services.AddDataProtection()
-                .SetApplicationName("TheWorkBook")
-                .PersistKeysToAWSSystemsManager($"/DataProtection");
         }
 
-        public void ConfigureDatabaseContext(IServiceCollection services)
+        public void ConfigureDatabaseContext(IServiceCollection services, IParameterStore parameterStore)
         {
-            //DB Connection
-            using IParameterStore parameterStore = GetParameterStore();
-
             LogTrace("Got IParameterStore object");
 
             IParameter connectionStringParam = parameterStore.GetParameter("/database/app-connection-string");
@@ -80,6 +91,31 @@ namespace TheWorkBook.Backend.API
             LogTrace("Got connectionStringParam object");
 
             services.AddDbContext<TheWorkBookContext>(options => options.UseSqlServer(connectionStringParam.Value));
+        }
+
+        public void ConfigureAuthentication(IServiceCollection services, IParameterStore parameterStore)
+        {
+            IParameterList parameterList = parameterStore.GetParameterListByPath("/auth/");
+
+            services.AddAuthentication("Bearer")
+             .AddJwtBearer("Bearer", options =>
+             {
+                 string identityServerUrl = parameterList.GetParameterValue("IdentityServerUrl");
+                 LogTrace("AddJwtBearer: Identity Server Url:" + identityServerUrl);
+                 options.Authority = identityServerUrl;
+
+                  // We have multiple identity token issuers per environment
+                  List<string> validIssuers = new();
+                 string identityValidIssuers = parameterList.GetParameterValue("IdentityValidIssuers");
+                 string[] issuers = identityValidIssuers.Split(';');
+                 validIssuers.AddRange(issuers);
+
+                 options.TokenValidationParameters = new TokenValidationParameters
+                 {
+                     ValidateAudience = false,
+                     ValidIssuers = validIssuers
+                 };
+             });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline
@@ -98,11 +134,12 @@ namespace TheWorkBook.Backend.API
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllers();
+                endpoints.MapControllers().RequireAuthorization();
                 endpoints.MapGet("/", async context =>
                 {
                     await context.Response.WriteAsync("Nothing to see here, please move along :-)");

@@ -1,5 +1,6 @@
 ﻿using System.Net.Mime;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
@@ -26,7 +27,7 @@ namespace TheWorkBook.Backend.API.Controllers
             _userService = userService;
         }
 
-        //[Authorize(Policy = "ext.user.api.policy")]
+        [Authorize(Policy = "ext.user.api.policy")]
         [HttpGet]
         [ActionName("getMyInfo")]
         [Consumes(MediaTypeNames.Application.Json)]
@@ -39,7 +40,7 @@ namespace TheWorkBook.Backend.API.Controllers
             return Ok(user);
         }
 
-        //[Authorize(Policy = "ext.user.api.policy")]
+        [AllowAnonymous]
         [HttpPost]
         [ActionName("register")]
         [Consumes(MediaTypeNames.Application.Json)]
@@ -52,7 +53,7 @@ namespace TheWorkBook.Backend.API.Controllers
             return Created("", "");
         }
 
-        //[Authorize(Policy = "ext.user.api.policy")]
+        [Authorize(Policy = "ext.user.api.policy")]
         [HttpPatch]
         [ActionName("update")]
         [Consumes(MediaTypeNames.Application.Json)]

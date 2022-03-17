@@ -1,5 +1,6 @@
 ﻿using System.Net.Mime;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
@@ -21,6 +22,7 @@ namespace TheWorkBook.Backend.API.Controllers
 
         }
 
+        [AllowAnonymous]
         [HttpGet]
         [ActionName("search")]
         [Consumes(MediaTypeNames.Application.Json)]
