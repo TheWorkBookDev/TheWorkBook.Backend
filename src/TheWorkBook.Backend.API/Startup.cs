@@ -20,7 +20,6 @@ namespace TheWorkBook.Backend.API
     {
         private readonly IEnvVariableHelper _envVariableHelper;
         readonly bool traceEnabled = false;
-
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -33,7 +32,35 @@ namespace TheWorkBook.Backend.API
             LogTrace("Startup()");
         }
 
-        public static IConfiguration Configuration { get; private set; }
+        public static IConfiguration? Configuration { get; private set; }
+        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        {
+            bool useDeveloperExceptionPage = _envVariableHelper.GetVariable<bool>("UseDeveloperExceptionPage");
+
+            if (env.IsDevelopment() || useDeveloperExceptionPage)
+            {
+                app.UseDeveloperExceptionPage();
+            }
+
+            AddSwaggerMiddleware(app, env);
+
+            app.UseHttpsRedirection();
+
+            app.UseRouting();
+
+            app.UseAuthentication();
+            app.UseAuthorization();
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers().RequireAuthorization();
+                endpoints.MapGet("/", async context =>
+                {
+                    await context.Response.WriteAsync("Nothing to see here, please move along :-)");
+                });
+            });
+        }
 
         // This method gets called by the runtime. Use this method to add services to the container
         public void ConfigureServices(IServiceCollection services)
@@ -82,72 +109,7 @@ namespace TheWorkBook.Backend.API
             AddSwaggerGenServices(services);
         }
 
-        public void ConfigureDatabaseContext(IServiceCollection services, IParameterStore parameterStore)
-        {
-            LogTrace("Got IParameterStore object");
-
-            IParameter connectionStringParam = parameterStore.GetParameter("/database/app-connection-string");
-
-            LogTrace("Got connectionStringParam object");
-
-            services.AddDbContext<TheWorkBookContext>(options => options.UseSqlServer(connectionStringParam.Value));
-        }
-
-        public void ConfigureAuthentication(IServiceCollection services, IParameterStore parameterStore)
-        {
-            IParameterList parameterList = parameterStore.GetParameterListByPath("/auth/");
-
-            services.AddAuthentication("Bearer")
-             .AddJwtBearer("Bearer", options =>
-             {
-                 string identityServerUrl = parameterList.GetParameterValue("IdentityServerUrl");
-                 LogTrace("AddJwtBearer: Identity Server Url:" + identityServerUrl);
-                 options.Authority = identityServerUrl;
-
-                  // We have multiple identity token issuers per environment
-                  List<string> validIssuers = new();
-                 string identityValidIssuers = parameterList.GetParameterValue("IdentityValidIssuers");
-                 string[] issuers = identityValidIssuers.Split(';');
-                 validIssuers.AddRange(issuers);
-
-                 options.TokenValidationParameters = new TokenValidationParameters
-                 {
-                     ValidateAudience = false,
-                     ValidIssuers = validIssuers
-                 };
-             });
-        }
-
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-        {
-            bool useDeveloperExceptionPage = _envVariableHelper.GetVariable<bool>("UseDeveloperExceptionPage");
-
-            if (env.IsDevelopment() || useDeveloperExceptionPage)
-            {
-                app.UseDeveloperExceptionPage();
-            }
-
-            AddSwaggerMiddleware(app, env);
-
-            app.UseHttpsRedirection();
-
-            app.UseRouting();
-
-            app.UseAuthentication();
-            app.UseAuthorization();
-
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers().RequireAuthorization();
-                endpoints.MapGet("/", async context =>
-                {
-                    await context.Response.WriteAsync("Nothing to see here, please move along :-)");
-                });
-            });
-        }
-
-        public void AddSwaggerGenServices(IServiceCollection services)
+        private void AddSwaggerGenServices(IServiceCollection services)
         {
             if (!_envVariableHelper.GetVariable<bool>("EnableSwagger"))
             {
@@ -202,7 +164,7 @@ namespace TheWorkBook.Backend.API
             });
         }
 
-        public void AddSwaggerMiddleware(IApplicationBuilder app, IWebHostEnvironment env)
+        private void AddSwaggerMiddleware(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (!_envVariableHelper.GetVariable<bool>("EnableSwagger"))
             {
@@ -238,7 +200,41 @@ namespace TheWorkBook.Backend.API
 
             app.UseSwaggerUI(swaggerUIOptions);
         }
+        private void ConfigureAuthentication(IServiceCollection services, IParameterStore parameterStore)
+        {
+            IParameterList parameterList = parameterStore.GetParameterListByPath("/auth/");
 
+            services.AddAuthentication("Bearer")
+             .AddJwtBearer("Bearer", options =>
+             {
+                 string identityServerUrl = parameterList.GetParameterValue("IdentityServerUrl");
+                 LogTrace("AddJwtBearer: Identity Server Url:" + identityServerUrl);
+                 options.Authority = identityServerUrl;
+
+                 // We have multiple identity token issuers per environment
+                 List<string> validIssuers = new();
+                 string identityValidIssuers = parameterList.GetParameterValue("IdentityValidIssuers");
+                 string[] issuers = identityValidIssuers.Split(';');
+                 validIssuers.AddRange(issuers);
+
+                 options.TokenValidationParameters = new TokenValidationParameters
+                 {
+                     ValidateAudience = false,
+                     ValidIssuers = validIssuers
+                 };
+             });
+        }
+
+        private void ConfigureDatabaseContext(IServiceCollection services, IParameterStore parameterStore)
+        {
+            LogTrace("Got IParameterStore object");
+
+            IParameter connectionStringParam = parameterStore.GetParameter("/database/app-connection-string");
+
+            LogTrace("Got connectionStringParam object");
+
+            services.AddDbContext<TheWorkBookContext>(options => options.UseSqlServer(connectionStringParam.Value));
+        }
         private IParameterStore GetParameterStore()
         {
             LogTrace("Entered GetParameterStore()");
