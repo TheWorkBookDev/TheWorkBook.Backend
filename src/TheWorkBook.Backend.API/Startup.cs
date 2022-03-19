@@ -82,6 +82,7 @@ namespace TheWorkBook.Backend.API
             services.AddScoped<IApplicationUser, ApplicationUser>();
 
             // Register Services
+            services.AddTransient<ICategoryService, CategoryService>();
             services.AddTransient<IListingService, ListingService>();
             services.AddTransient<IUserService, UserService>();
 

@@ -15,6 +15,8 @@ namespace TheWorkBook.Backend.API.MappingConfigurations
 
             CreateMap<Listing, ListingDto>();
             CreateMap<ListingDto, Listing>();
+
+            CreateMap<Category, CategoryDto>();
         }
     }
 }
