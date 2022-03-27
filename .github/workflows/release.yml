@@ -44,7 +44,7 @@ jobs:
 
   code-analysis:
     name: Code Analysis
-    needs: [build-and-test, prepare]
+    needs: [prepare]
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
@@ -132,12 +132,6 @@ jobs:
     - name: Set version in aws-lambda-tools-defaults
       working-directory: ./src/TheWorkBook.Backend.API
       run: find aws-lambda-tools-defaults.json -type f -exec sed -i ''s/#{ReleaseVersion}#/${{ env.version }}/g'' {} \;  
-    - name: Restore dependencies
-      run: dotnet restore
-    - name: Build
-      run: dotnet build --configuration Release --no-restore
-    - name: Test
-      run: dotnet test --no-build --verbosity normal
     - name: Deploy to Lambda
       working-directory: ./src/TheWorkBook.Backend.API
       run: dotnet lambda deploy-serverless
