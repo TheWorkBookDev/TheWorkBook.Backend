@@ -4,6 +4,8 @@
 # top-most EditorConfig file
 root = true
 
+
+
 # Default settings:
 # A newline ending every file
 # Use 4 spaces as indentation
@@ -13,6 +15,8 @@ indent_style = space
 indent_size = 4
 
 [project.json]
+
+[*.yml]
 indent_size = 2
 
 # XML project files
