@@ -190,7 +190,7 @@ jobs:
 
   deploy-production:
     name: Deploy to AWS Production
-    needs: [prepare, deploy-production]
+    needs: [prepare, deploy-staging]
     runs-on: ubuntu-latest
     environment:
       name: Production
