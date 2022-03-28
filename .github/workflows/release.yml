@@ -162,6 +162,7 @@ jobs:
     timeout-minutes: 20
     environment:
       name: Staging
+      url: 'https://betaapi.theworkbook.ie/swagger/'
     steps:
     - uses: actions/checkout@v3
     - name: Setup .NET
@@ -173,7 +174,7 @@ jobs:
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: eu-west-2
+        aws-region: eu-west-1
     - name: AWS CLI
       run: dotnet tool install -g Amazon.Lambda.Tools
     - name: Create Output Directory
@@ -182,12 +183,15 @@ jobs:
       with:
         name: backend-package
         path: ${{ github.workspace }}/output/
-    - name: Set region in CloudFormation
+    - name: Set Environment in CloudFormation
       working-directory: ${{ github.workspace }}/output/
-      run: find *.template -type f -exec sed -i ''s/eu-west-1/eu-west-2/g'' {} \;
+      run: find *.template -type f -exec sed -i ''s/#{EnvironmentName}#/Staging/g'' {} \;
+    - name: Set Domain in CloudFormation
+      working-directory: ${{ github.workspace }}/output/
+      run: find *.template -type f -exec sed -i ''s/api.theworkbook.ie/betaapi.theworkbook.ie/g'' {} \;
     - name: Deploy to Lambda
       working-directory: ${{ github.workspace }}/output/
-      run: dotnet lambda deploy-serverless --package LambdaDeploy.zip --region eu-west-2 --s3-bucket theworkbook-apps-staging --s3-prefix TheWorkBookApiStaging/ --stack-name TheWorkBookApiStaging --template serverless.template    
+      run: dotnet lambda deploy-serverless --package LambdaDeploy.zip --region eu-west-1 --s3-bucket theworkbook-apps --s3-prefix TheWorkBookApiStaging/ --stack-name TheWorkBookApiStaging --template serverless.template    
 
   deploy-production:
     name: Deploy to AWS Production
@@ -216,6 +220,9 @@ jobs:
       with:
         name: backend-package
         path: ${{ github.workspace }}/output/
+    - name: Set Environment in CloudFormation
+      working-directory: ${{ github.workspace }}/output/
+      run: find *.template -type f -exec sed -i ''s/#{EnvironmentName}#/Production/g'' {} \;
     - name: Deploy to Lambda
       working-directory: ${{ github.workspace }}/output/
       run: dotnet lambda deploy-serverless --package LambdaDeploy.zip --region eu-west-1 --s3-bucket theworkbook-apps --s3-prefix TheWorkBookApi/ --stack-name TheWorkBookApi --template serverless.template    
