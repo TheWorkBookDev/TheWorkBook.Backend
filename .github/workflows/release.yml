@@ -95,7 +95,6 @@ jobs:
       working-directory: ./src/TheWorkBook.Backend.API
       run: find aws-lambda-tools-defaults.json -type f -exec sed -i ''s/#{ReleaseVersion}#/${{ env.version }}/g'' {} \;
     - name: Create Output Directories
-      working-directory: ./src
       run: |
         mkdir output
         cd output
