@@ -74,7 +74,7 @@ jobs:
 
   publish:
     name: Create deploy package
-    needs: [prepare, build-and-test, code-analysis]
+    needs: [prepare, build-and-test]
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
@@ -95,12 +95,12 @@ jobs:
       working-directory: ./src/TheWorkBook.Backend.API
       run: find aws-lambda-tools-defaults.json -type f -exec sed -i ''s/#{ReleaseVersion}#/${{ env.version }}/g'' {} \;
     - name: Create Output Directories
-      working-directory: ./src
       run: |
-        mkdir output
-        cd output
-        mkdir artifact
-        mkdir published
+        cd "${env:GITHUB_WORKSPACE}"
+        mkdir -p output/published
+        mkdir -p output/artifact
+    - name: Display structure of directories
+      run: ls -d */
     - name: Install dependencies
       run: dotnet restore      
     - name: Publish
@@ -152,7 +152,7 @@ jobs:
 
   deploy-production:
     name: Deploy to AWS Production
-    needs: [prepare, publish]
+    needs: [prepare, deploy-nuget]
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
