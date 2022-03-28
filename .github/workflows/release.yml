@@ -104,8 +104,6 @@ jobs:
         mkdir -p output/published
         mkdir -p output/artifact
       shell: pwsh
-    - name: Display structure of directories
-      run: ls -d */
     - name: Install dependencies
       run: dotnet restore      
     - name: Publish
@@ -184,13 +182,16 @@ jobs:
       with:
         name: backend-package
         path: ${{ github.workspace }}/output/
+    - name: Set region in CloudFormation
+      working-directory: ${{ github.workspace }}/output/
+      run: find *.template -type f -exec sed -i ''s/eu-west-1/eu-west-2/g'' {} \;
     - name: Deploy to Lambda
       working-directory: ${{ github.workspace }}/output/
-      run: dotnet lambda deploy-serverless --package LambdaDeploy.zip --region eu-west-2 --s3-bucket theworkbook-apps --s3-prefix TheWorkBookApiStaging/ --stack-name TheWorkBookApiStaging --template serverless.template    
+      run: dotnet lambda deploy-serverless --package LambdaDeploy.zip --region eu-west-2 --s3-bucket theworkbook-apps-staging --s3-prefix TheWorkBookApiStaging/ --stack-name TheWorkBookApiStaging --template serverless.template    
 
   deploy-production:
     name: Deploy to AWS Production
-    needs: [prepare, deploy-production]
+    needs: [prepare, deploy-staging]
     runs-on: ubuntu-latest
     environment:
       name: Production
