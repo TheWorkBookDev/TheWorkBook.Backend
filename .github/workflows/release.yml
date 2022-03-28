@@ -72,9 +72,63 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+  publish:
+    name: Create deploy package
+    needs: [prepare, build-and-test, code-analysis]
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v2
+      with:
+        dotnet-version: 6.0.x
+    - name: Add Nuget Feed
+      run:  dotnet nuget add source ${{ secrets.GITHUBNUGETURL }} -n github -u ${{ secrets.GITHUBUSER }} -p ${{ secrets.GITHUBREADPACKAGES }} --store-password-in-clear-text
+    - name: Set Version
+      run: |
+        version=`echo ${{needs.prepare.outputs.version}}`
+        echo "version=$version" >> $GITHUB_ENV
+    - name: Set version in CloudFormation
+      working-directory: ./src/TheWorkBook.Backend.API
+      run: find *.template -type f -exec sed -i ''s/#{ReleaseVersion}#/v${{ env.version }}/g'' {} \;
+    - name: Set version in aws-lambda-tools-defaults
+      working-directory: ./src/TheWorkBook.Backend.API
+      run: find aws-lambda-tools-defaults.json -type f -exec sed -i ''s/#{ReleaseVersion}#/${{ env.version }}/g'' {} \;
+    - name: Create Output Directories
+      working-directory: ./src
+      run: |
+        mkdir output
+        cd output
+        mkdir artifact
+        mkdir published
+    - name: Install dependencies
+      run: dotnet restore      
+    - name: Publish
+      run: |
+        dotnet build --configuration Release --no-restore
+        dotnet publish Publish.slnf --output "${env:GITHUB_WORKSPACE}/output/published" -p:Version=$version --configuration Release --framework "net6.0" --runtime linux-arm64 /p:GenerateRuntimeConfigurationFiles=true /p:PublishReadyToRun=true /p:TieredCompilation=false /p:TieredCompilationQuickJit=false --self-contained false               
+    - name: Zip up files
+      run:  |
+        Compress-Archive -Path "${env:GITHUB_WORKSPACE}/output/published/*" -CompressionLevel Optimal -DestinationPath "${env:GITHUB_WORKSPACE}/output/artifact/LambdaDeploy.zip"
+      shell: pwsh
+    - name: Copy CloudFormation template into package
+      run:  |
+        Copy-Item -Path "${env:GITHUB_WORKSPACE}/src/*/serverless.template" -Destination "${env:GITHUB_WORKSPACE}/output/artifact/serverless.template"
+      shell: pwsh
+    - name: Copy aws-lambda-tools-defaults into package
+      run:  |
+        Copy-Item -Path "${env:GITHUB_WORKSPACE}/src/*/aws-lambda-tools-defaults.json" -Destination "${env:GITHUB_WORKSPACE}/output/artifact/aws-lambda-tools-defaults.json"
+      shell: pwsh      
+    - uses: actions/upload-artifact@v3
+      with:
+        name: backend-package
+        path: ${{ github.workspace }}/output/artifact/**/*
+        if-no-files-found: error # 'warn' or 'ignore' are also available, defaults to `warn`
+        retention-days: 3 # Set low because I want to stay inside the limits of the free tier.
+
   deploy-nuget:
     name: Deploy nugets to GitHub Packages
-    needs: [code-analysis, prepare]
+    needs: [prepare, publish]
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
@@ -94,11 +148,11 @@ jobs:
     - name: Build
       run: dotnet build -p:Version=$version --configuration Release --no-restore
     - name: Publish Nuget
-      run: dotnet nuget push **/*.nupkg --api-key ${{ secrets.GITHUBWRITEPACKAGES }} --source ${{ secrets.GITHUBNUGETURL }}  
+      run: dotnet nuget push **/*.nupkg --api-key ${{ secrets.GITHUBWRITEPACKAGES }} --source ${{ secrets.GITHUBNUGETURL }} 
 
   deploy-production:
     name: Deploy to AWS Production
-    needs: [deploy-nuget, prepare]
+    needs: [prepare, publish]
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
@@ -106,12 +160,6 @@ jobs:
       uses: actions/setup-dotnet@v2
       with:
         dotnet-version: 6.0.x
-    - name: Add Nuget Feed
-      run:  dotnet nuget add source ${{ secrets.GITHUBNUGETURL }} -n github -u ${{ secrets.GITHUBUSER }} -p ${{ secrets.GITHUBREADPACKAGES }} --store-password-in-clear-text
-    - name: Set Version
-      run: |
-        version=`echo ${{needs.prepare.outputs.version}}`
-        echo "version=$version" >> $GITHUB_ENV
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:
@@ -120,18 +168,13 @@ jobs:
         aws-region: eu-west-1
     - name: AWS CLI
       run: dotnet tool install -g Amazon.Lambda.Tools
-    - name: Get build version
-      run: |
-        $ref = "${env:GITHUB_REF}"
-        $version = $ref.Substring($ref.LastIndexOf("/") + 2)
-        echo "version=${version}" | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf-8 -Append      
-      shell: pwsh
-    - name: Set version in CloudFormation
-      working-directory: ./src/TheWorkBook.Backend.API
-      run: find *.template -type f -exec sed -i ''s/#{ReleaseVersion}#/v${{ env.version }}/g'' {} \;
-    - name: Set version in aws-lambda-tools-defaults
-      working-directory: ./src/TheWorkBook.Backend.API
-      run: find aws-lambda-tools-defaults.json -type f -exec sed -i ''s/#{ReleaseVersion}#/${{ env.version }}/g'' {} \;  
+    - name: Create Output Directory
+      working-directory: ./src
+      run: mkdir output    
+    - uses: actions/download-artifact@v3
+      with:
+        name: backend-package
+        path: ${{ github.workspace }}/output/
     - name: Deploy to Lambda
-      working-directory: ./src/TheWorkBook.Backend.API
-      run: dotnet lambda deploy-serverless
+      working-directory: ./src/output/backend-package/
+      run: dotnet lambda deploy-serverless --package LambdaDeploy.zip --region eu-west1 --s3-bucket theworkbook-apps --s3-prefix TheWorkBookApi/ --stack-name TheWorkBookApi --template serverless.template    
