@@ -22,7 +22,7 @@ namespace TheWorkBook.Backend.API.Controllers
             _categoryService = categoryService;
         }
 
-        [Authorize(Policy = "ext.user.api.policy")]
+        [Authorize(Policy = "int.api.policy")]
         [HttpPost]
         [ActionName("add")]
         [Consumes(MediaTypeNames.Application.Json)]
@@ -60,7 +60,7 @@ namespace TheWorkBook.Backend.API.Controllers
             return Ok(categories);
         }
 
-        [Authorize(Policy = "ext.user.api.policy")]
+        [Authorize(Policy = "int.api.policy")]
         [HttpPatch]
         [ActionName("update")]
         [Consumes(MediaTypeNames.Application.Json)]

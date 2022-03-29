@@ -104,9 +104,16 @@ namespace TheWorkBook.Backend.API
 
             services.AddAuthorization(options =>
             {
+                // External users
                 options.AddPolicy("ext.user.api.policy", policyUser =>
                 {
                     policyUser.RequireClaim("scope", "api");
+                });
+
+                // Internal users and backend services/operations.
+                options.AddPolicy("int.api.policy", policyUser =>
+                {
+                    policyUser.RequireClaim("scope", "int.api");
                 });
             });
 
