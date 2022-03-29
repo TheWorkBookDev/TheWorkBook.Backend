@@ -210,24 +210,24 @@ namespace TheWorkBook.Backend.API
             IParameterList parameterList = parameterStore.GetParameterListByPath("/auth/");
 
             services.AddAuthentication("Bearer")
-             .AddJwtBearer("Bearer", options =>
-             {
-                 string identityServerUrl = parameterList.GetParameterValue("IdentityServerUrl");
-                 LogTrace("AddJwtBearer: Identity Server Url:" + identityServerUrl);
-                 options.Authority = identityServerUrl;
+                .AddJwtBearer("Bearer", options =>
+                {
+                    string identityServerUrl = parameterList.GetParameterValue("IdentityServerUrl");
+                    LogTrace("AddJwtBearer: Identity Server Url:" + identityServerUrl);
+                    options.Authority = identityServerUrl;
 
-                 // We have multiple identity token issuers per environment
-                 List<string> validIssuers = new();
-                 string identityValidIssuers = parameterList.GetParameterValue("IdentityValidIssuers");
-                 string[] issuers = identityValidIssuers.Split(';');
-                 validIssuers.AddRange(issuers);
+                    // We have multiple identity token issuers per environment
+                    List<string> validIssuers = new();
+                    string identityValidIssuers = parameterList.GetParameterValue("IdentityValidIssuers");
+                    string[] issuers = identityValidIssuers.Split(';');
+                    validIssuers.AddRange(issuers);
 
-                 options.TokenValidationParameters = new TokenValidationParameters
-                 {
-                     ValidateAudience = false,
-                     ValidIssuers = validIssuers
-                 };
-             });
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateAudience = false,
+                        ValidIssuers = validIssuers
+                    };
+                });
         }
 
         private void ConfigureDatabaseContext(IServiceCollection services, IParameterStore parameterStore)
