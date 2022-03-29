@@ -1,6 +1,5 @@
 ﻿using System.Reflection;
 using Amazon.Lambda.Core;
-using Amazon.SimpleSystemsManagement;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.EntityFrameworkCore;

@@ -26,7 +26,14 @@ namespace TheWorkBook.Backend.API.Middleware
                 if (authHeader != null && authHeader.StartsWith("Basic "))
                 {
                     // Get the encoded username and password
-                    var encodedUsernamePassword = authHeader.Split(' ', 2, StringSplitOptions.RemoveEmptyEntries)[1]?.Trim();
+                    string? encodedUsernamePassword = authHeader.Split(' ', 2, StringSplitOptions.RemoveEmptyEntries)[1]?.Trim();
+                    
+                    if (string.IsNullOrWhiteSpace(encodedUsernamePassword))
+                    {
+                        // Bad Request - Request does not contain Basic Auth credentials.
+                        context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                        return;
+                    }
 
                     // Decode from Base64 to string
                     var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
@@ -88,14 +95,20 @@ namespace TheWorkBook.Backend.API.Middleware
             {
                 return true;
             }
-            if (context.Connection.RemoteIpAddress.Equals(context.Connection.LocalIpAddress))
+
+            if (context.Connection.RemoteIpAddress != null)
             {
-                return true;
+                if (context.Connection.RemoteIpAddress.Equals(context.Connection.LocalIpAddress))
+                {
+                    return true;
+                }
+                
+                if (IPAddress.IsLoopback(context.Connection.RemoteIpAddress))
+                {
+                    return true;
+                }
             }
-            if (IPAddress.IsLoopback(context.Connection.RemoteIpAddress))
-            {
-                return true;
-            }
+
             return false;
         }
     }
