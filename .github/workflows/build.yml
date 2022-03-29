@@ -58,6 +58,7 @@ jobs:
       env:
         VALIDATE_ALL_CODEBASE: false
         VALIDATE_JSCPD: false
+        VALIDATE_GITHUB_ACTIONS: false
         # Change to 'master' if your main branch differs
         DEFAULT_BRANCH: main
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
