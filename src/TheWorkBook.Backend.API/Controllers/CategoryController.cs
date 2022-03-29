@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using TheWorkBook.Backend.Service.Abstraction;
 using TheWorkBook.Shared.Dto;
-using TheWorkBook.Shared.ServiceModels;
 using TheWorkBook.Utils.Abstraction;
 
 namespace TheWorkBook.Backend.API.Controllers
@@ -31,6 +30,7 @@ namespace TheWorkBook.Backend.API.Controllers
         [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Add(CategoryDto categoryInfo)
         {
+            await _categoryService.AddCategoryAsync(categoryInfo);
             return Ok();
         }
 
@@ -41,10 +41,10 @@ namespace TheWorkBook.Backend.API.Controllers
         [ProducesResponseType(typeof(CategoryDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Get(Guid identifier)
+        public async Task<IActionResult> Get(int categoryId)
         {
-            CategoryDto category = new CategoryDto();
-            return Ok(category);
+            CategoryDto categoryDto = await _categoryService.GetCategoryAsync(categoryId);
+            return Ok(categoryDto);
         }
 
         [AllowAnonymous]
@@ -56,7 +56,7 @@ namespace TheWorkBook.Backend.API.Controllers
         [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetCategories(int? parentCategoryId = null)
         {
-            List<CategoryDto> categories = await _categoryService.GetCategories(parentCategoryId);
+            List<CategoryDto> categories = await _categoryService.GetCategoriesAsync(parentCategoryId);
             return Ok(categories);
         }
 

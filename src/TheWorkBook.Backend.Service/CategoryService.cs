@@ -20,13 +20,21 @@ namespace TheWorkBook.Backend.Service
         )
             : base(mapper, logger, applicationUser, envVariableHelper, theWorkBookContext) { }
 
-        public async Task<List<CategoryDto>> GetCategories(int? parentCategoryId = null)
+
+        public async Task AddCategoryAsync(CategoryDto category)
+        {
+            var categoryEntity = Mapper.Map<Model.Category>(category);
+            await TheWorkBookContext.Categories.AddAsync(categoryEntity);
+            await TheWorkBookContext.SaveChangesAsync();
+        }
+
+        public async Task<List<CategoryDto>> GetCategoriesAsync(int? parentCategoryId = null)
         {
             IQueryable<Model.Category> categoryQuery = TheWorkBookContext.Categories.AsNoTracking().AsQueryable();
 
             if (parentCategoryId.HasValue)
             {
-                categoryQuery = categoryQuery.Where(cat=>cat.ParentCategoryId == parentCategoryId);
+                categoryQuery = categoryQuery.Where(cat => cat.ParentCategoryId == parentCategoryId);
             }
 
             // TODO: Add SortOrder column
@@ -37,6 +45,13 @@ namespace TheWorkBook.Backend.Service
             List<CategoryDto> categoryDtos = Mapper.Map<List<CategoryDto>>(categories);
 
             return categoryDtos;
+        }
+
+        public async Task<CategoryDto> GetCategoryAsync(int categoryId)
+        {
+            Model.Category category = await TheWorkBookContext.Categories.FindAsync(categoryId);
+            CategoryDto categoryDto = Mapper.Map<CategoryDto>(category);
+            return categoryDto;
         }
     }
 }

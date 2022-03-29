@@ -4,6 +4,8 @@ namespace TheWorkBook.Backend.Service.Abstraction
 {
     public interface ICategoryService
     {
-        Task<List<CategoryDto>> GetCategories(int? parentCategoryId = null);
+        Task AddCategoryAsync(CategoryDto category);
+        Task<List<CategoryDto>> GetCategoriesAsync(int? parentCategoryId = null);
+        Task<CategoryDto> GetCategoryAsync(int categoryId);
     }
 }
