@@ -18,6 +18,14 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[Listing]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Location]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[User]",
          "ObjectType": 0
       }

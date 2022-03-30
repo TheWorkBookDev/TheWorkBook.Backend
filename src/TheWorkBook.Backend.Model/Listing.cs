@@ -1,12 +1,38 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
 namespace TheWorkBook.Backend.Model
 {
-    public class Listing
+    [Table("Listing")]
+    public partial class Listing
     {
+        [Key]
+        public int ListingId { get; set; }
+        public int CategoryId { get; set; }
+        public int UserId { get; set; }
+        public int LocationId { get; set; }
+        [Required]
+        [StringLength(2000)]
+        public string MainDescription { get; set; }
+        [Column(TypeName = "money")]
+        public decimal Budget { get; set; }
+        public byte StatusId { get; set; }
+        [Precision(0)]
+        public DateTime RecordCreatedUtc { get; set; }
+        [Precision(0)]
+        public DateTime RecordUpdatedUtc { get; set; }
+
+        [ForeignKey(nameof(CategoryId))]
+        [InverseProperty("Listings")]
+        public virtual Category Category { get; set; }
+        [ForeignKey(nameof(LocationId))]
+        [InverseProperty("Listings")]
+        public virtual Location Location { get; set; }
+        [ForeignKey(nameof(UserId))]
+        [InverseProperty("Listings")]
+        public virtual User User { get; set; }
     }
 }

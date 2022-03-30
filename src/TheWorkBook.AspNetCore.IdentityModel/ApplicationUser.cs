@@ -26,10 +26,9 @@ namespace TheWorkBook.AspNetCore.IdentityModel
 
             Claim claim = httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(c => c.Type == "UserKey");
 
-            if (claim != null)
+            if (claim != null && int.TryParse(claim.Value, out int key))
             {
-                if (int.TryParse(claim.Value, out int key))
-                    userkey = key;
+                userkey = key;
             }
 
             return userkey;

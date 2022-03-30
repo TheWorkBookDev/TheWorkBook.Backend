@@ -26,7 +26,7 @@ namespace TheWorkBook.Backend.API.Middleware
                 if (authHeader != null && authHeader.StartsWith("Basic "))
                 {
                     // Get the encoded username and password
-                    string? encodedUsernamePassword = authHeader.Split(' ', 2, StringSplitOptions.RemoveEmptyEntries)[1]?.Trim();
+                    string encodedUsernamePassword = authHeader.Split(' ', 2, StringSplitOptions.RemoveEmptyEntries)[1]?.Trim();
                     
                     if (string.IsNullOrWhiteSpace(encodedUsernamePassword))
                     {

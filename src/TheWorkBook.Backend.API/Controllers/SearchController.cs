@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using TheWorkBook.Backend.Service.Abstraction;
 using TheWorkBook.Shared.Dto;
 using TheWorkBook.Shared.ServiceModels;
 using TheWorkBook.Utils.Abstraction;
@@ -15,11 +16,13 @@ namespace TheWorkBook.Backend.API.Controllers
     [Route("v{version:apiVersion}/search/[action]")]
     public class SearchController : BaseController
     {
-        public SearchController(ILogger<ListingController> logger,
-            IEnvVariableHelper envVariableHelper)
-            : base(logger, envVariableHelper)
-        {
+        readonly IListingService _listingService;
 
+        public SearchController(ILogger<SearchController> logger,
+            IEnvVariableHelper envVariableHelper,
+            IListingService listingService) : base(logger, envVariableHelper)
+        {
+            _listingService = listingService;
         }
 
         [AllowAnonymous]

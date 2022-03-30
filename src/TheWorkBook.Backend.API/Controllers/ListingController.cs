@@ -2,8 +2,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using TheWorkBook.Backend.Service.Abstraction;
 using TheWorkBook.Shared.Dto;
-using TheWorkBook.Shared.ServiceModels;
 using TheWorkBook.Utils.Abstraction;
 
 namespace TheWorkBook.Backend.API.Controllers
@@ -11,11 +11,13 @@ namespace TheWorkBook.Backend.API.Controllers
     [Route("v{version:apiVersion}/listing/[action]")]
     public class ListingController : BaseController
     {
+        readonly IListingService _listingService;
+        
         public ListingController(ILogger<ListingController> logger,
-            IEnvVariableHelper envVariableHelper)
-            : base(logger, envVariableHelper)
+            IEnvVariableHelper envVariableHelper,
+            IListingService listingService) : base(logger, envVariableHelper)
         {
-
+            _listingService = listingService;
         }
 
         [Authorize(Policy = "ext.user.api.policy")]
@@ -25,9 +27,10 @@ namespace TheWorkBook.Backend.API.Controllers
         [ProducesResponseType(typeof(OkObjectResult), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Add(ListingDto listingInfo)
+        public async Task<IActionResult> Add(ListingDto listingDto)
         {
-            return Ok();
+            await _listingService.AddListingAsync(listingDto);
+            return Ok(listingDto);  // Need to return the id of the listing.
         }
 
         [AllowAnonymous]
@@ -37,10 +40,10 @@ namespace TheWorkBook.Backend.API.Controllers
         [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Get(Guid identifier)
+        public async Task<IActionResult> Get(int id)
         {
-            ListingDto listing = new ListingDto();
-            return Ok(listing);
+            var listingDto = await _listingService.GetListingAsync(id);
+            return Ok(listingDto);
         }
 
         [Authorize(Policy = "ext.user.api.policy")]

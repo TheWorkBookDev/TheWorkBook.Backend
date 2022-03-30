@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using TheWorkBook.AspNetCore.IdentityModel;
 using TheWorkBook.Backend.Service.Abstraction;
 using TheWorkBook.Shared.Dto;
 using TheWorkBook.Shared.ServiceModels;
@@ -18,13 +19,16 @@ namespace TheWorkBook.Backend.API.Controllers
     public class UserController : BaseController
     {
         private readonly IUserService _userService;
+        private readonly IApplicationUser _applicationUser;
 
         public UserController(ILogger<UserController> logger,
             IEnvVariableHelper envVariableHelper,
-            IUserService userService)
+            IUserService userService,
+            IApplicationUser applicationUser)
             : base(logger, envVariableHelper)
         {
             _userService = userService;
+            _applicationUser = applicationUser;
         }
 
         [Authorize(Policy = "ext.user.api.policy")]
@@ -36,7 +40,7 @@ namespace TheWorkBook.Backend.API.Controllers
         [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetMyInfo()
         {
-            UserDto user = await _userService.GetUser(1);
+            UserDto user = await _userService.GetUser(_applicationUser.UserId.Value);
             return Ok(user);
         }
 
@@ -55,15 +59,15 @@ namespace TheWorkBook.Backend.API.Controllers
 
         [Authorize(Policy = "ext.user.api.policy")]
         [HttpPatch]
-        [ActionName("update")]
+        [ActionName("updateMy")]
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> Update([FromBody] JsonPatchDocument<UserDto> patchDocUserDto)
+        public async Task<IActionResult> UpdateMyInfo([FromBody] JsonPatchDocument<UserDto> patchDocUserDto)
         {
             if (patchDocUserDto == null) return BadRequest();
 
-            //int userKey = ApplicationUser.UserKey.Value;
-            //await userService.UpdateUserAsync(userKey, patchDocUserDto);
+            await _userService.UpdateUserAsync(_applicationUser.UserId.Value, patchDocUserDto);
+
             return Ok();
         }
     }

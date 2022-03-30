@@ -8,6 +8,7 @@ using TheWorkBook.Shared.Dto;
 using TheWorkBook.Utils.Abstraction;
 using Microsoft.EntityFrameworkCore;
 using TheWorkBook.Shared.ServiceModels;
+using Microsoft.AspNetCore.JsonPatch;
 
 namespace TheWorkBook.Backend.Service
 {
@@ -22,7 +23,7 @@ namespace TheWorkBook.Backend.Service
 
         public async Task<UserDto> GetUser(int userId)
         {
-            User? user = await TheWorkBookContext.Users.AsNoTracking().FirstOrDefaultAsync(u => u.UserId == userId);
+            User user = await TheWorkBookContext.Users.AsNoTracking().FirstOrDefaultAsync(u => u.UserId == userId);
             UserDto userDto = Mapper.Map<UserDto>(user);
             return userDto;
         }
@@ -31,6 +32,23 @@ namespace TheWorkBook.Backend.Service
         {
             User user = Mapper.Map<User>(createUserRequest);
             TheWorkBookContext.Users.Add(user);
+            await TheWorkBookContext.SaveChangesAsync();
+        }
+
+        public async Task UpdateUserAsync(int userId, JsonPatchDocument<UserDto> patchDocUserDto)
+        {
+            JsonPatchDocument<User> patchDocument = Mapper.Map<JsonPatchDocument<User>>(patchDocUserDto);
+
+            // We need to identify what fields in the UserDto object cannot be updated here.
+            var uneditablePaths = new List<string> { "/RecordCreatedUtc" };
+
+            if (patchDocument.Operations.Any(operation => uneditablePaths.Contains(operation.path)))
+            {
+                throw new UnauthorizedAccessException();
+            }
+
+            User userToUpdate = TheWorkBookContext.Users.Find(userId);
+            patchDocument.ApplyTo(userToUpdate);
             await TheWorkBookContext.SaveChangesAsync();
         }
     }

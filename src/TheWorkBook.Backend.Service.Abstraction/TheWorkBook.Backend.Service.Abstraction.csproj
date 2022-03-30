@@ -10,6 +10,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.JsonPatch" Version="6.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\TheWorkBook.Shared.Dto\TheWorkBook.Shared.Dto.csproj" />
     <ProjectReference Include="..\TheWorkBook.Shared.ServiceModels\TheWorkBook.Shared.ServiceModels.csproj" />
   </ItemGroup>

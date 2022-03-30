@@ -9,6 +9,11 @@ namespace TheWorkBook.Backend.Model
     [Table("User")]
     public partial class User
     {
+        public User()
+        {
+            Listings = new HashSet<Listing>();
+        }
+
         [Key]
         public int UserId { get; set; }
         [Required]
@@ -30,5 +35,8 @@ namespace TheWorkBook.Backend.Model
         public DateTime RecordCreatedUtc { get; set; }
         [Precision(0)]
         public DateTime RecordUpdatedUtc { get; set; }
+
+        [InverseProperty(nameof(Listing.User))]
+        public virtual ICollection<Listing> Listings { get; set; }
     }
 }
