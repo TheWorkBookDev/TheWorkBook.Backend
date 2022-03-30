@@ -1,14 +1,14 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using TheWorkBook.AspNetCore.IdentityModel;
 using TheWorkBook.Backend.Data;
 using TheWorkBook.Backend.Model;
 using TheWorkBook.Backend.Service.Abstraction;
 using TheWorkBook.Shared.Dto;
-using TheWorkBook.Utils.Abstraction;
-using Microsoft.EntityFrameworkCore;
 using TheWorkBook.Shared.ServiceModels;
-using Microsoft.AspNetCore.JsonPatch;
+using TheWorkBook.Utils.Abstraction;
 
 namespace TheWorkBook.Backend.Service
 {

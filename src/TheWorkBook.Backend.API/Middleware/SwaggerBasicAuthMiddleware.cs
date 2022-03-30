@@ -27,7 +27,7 @@ namespace TheWorkBook.Backend.API.Middleware
                 {
                     // Get the encoded username and password
                     string encodedUsernamePassword = authHeader.Split(' ', 2, StringSplitOptions.RemoveEmptyEntries)[1]?.Trim();
-                    
+
                     if (string.IsNullOrWhiteSpace(encodedUsernamePassword))
                     {
                         // Bad Request - Request does not contain Basic Auth credentials.
@@ -102,7 +102,7 @@ namespace TheWorkBook.Backend.API.Middleware
                 {
                     return true;
                 }
-                
+
                 if (IPAddress.IsLoopback(context.Connection.RemoteIpAddress))
                 {
                     return true;

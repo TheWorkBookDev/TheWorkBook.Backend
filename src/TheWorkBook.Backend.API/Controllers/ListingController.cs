@@ -12,7 +12,7 @@ namespace TheWorkBook.Backend.API.Controllers
     public class ListingController : BaseController
     {
         readonly IListingService _listingService;
-        
+
         public ListingController(ILogger<ListingController> logger,
             IEnvVariableHelper envVariableHelper,
             IListingService listingService) : base(logger, envVariableHelper)
