@@ -1,11 +1,11 @@
-name: CI/CD Pipeline
+name: CI/CD Pipeline ✈️
 
 on:
   push:
     branches:
       - '*'
     tags:
-      - '*'
+      - v[0-9]+.[0-9]+.[0-9]+
   pull_request:
     branches:
       - '*'
@@ -35,11 +35,34 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
-      run: dotnet build --no-restore --configuration Release
+      run: dotnet build --no-restore
+    - name: Test
+      run: dotnet test --no-build --verbosity normal
+
+  super-linter:
+    name: Lint Code Base
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
+      with:
+        # Full git history is needed to get a proper list of changed files within `super-linter`
+        fetch-depth: 0
+    - name: Lint Code Base
+      id: lintcodebase
+      uses: github/super-linter@v4
+      continue-on-error: true  # Informational, continue with pipeline if superlinter fails. 
+      env:
+        VALIDATE_ALL_CODEBASE: false
+        VALIDATE_JSCPD: false
+        VALIDATE_GITHUB_ACTIONS: false
+        # Change to 'master' if your main branch differs
+        DEFAULT_BRANCH: main
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   code-analysis:
     name: Code Analysis
-    needs: [prepare, build-and-test]
+    needs: [build-and-test]
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -51,7 +74,8 @@ jobs:
       with:
         dotnet-version: 6.0.x
     - name: Add Nuget Feed
-      run:  dotnet nuget add source ${{ secrets.GITHUBNUGETURL }} -n github -u ${{ secrets.GITHUBUSER }} -p ${{ secrets.GITHUBREADPACKAGES }} --store-password-in-clear-text    
+      run: |
+        dotnet nuget add source ${{ secrets.GITHUBNUGETURL }} -n github -u ${{ secrets.GITHUBUSER }} -p ${{ secrets.GITHUBREADPACKAGES }} --store-password-in-clear-text    
       shell: pwsh 
     - name: Sonarqube Begin
       run: |
@@ -68,43 +92,10 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  super-linter:
-    # Set the agent to run on
-    runs-on: ubuntu-latest
-
-    ##################
-    # Load all steps #
-    ##################
-    steps:
-    ##########################
-    # Checkout the code base #
-    ##########################
-    - name: Checkout Code
-      uses: actions/checkout@v3
-      with:
-        # Full git history is needed to get a proper list of changed files within `super-linter`
-        fetch-depth: 0
-    ################################
-    # Run Linter against code base #
-    ################################
-    - name: Lint Code Base
-      id: lintcodebase
-      uses: github/super-linter@v4
-      continue-on-error: true  # Informational, continue with pipeline if superlinter fails. 
-      env:
-        VALIDATE_ALL_CODEBASE: false
-        VALIDATE_JSCPD: false
-        VALIDATE_GITHUB_ACTIONS: false
-        # Change to 'master' if your main branch differs
-        DEFAULT_BRANCH: main
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    - name: Check on failures  # Informational, continue with pipeline if superlinter fails.
-      if: steps.lintcodebase.outcome != 'success'
-      run: exit 1
-
-  prepare:
-    name: Prepare (get version from release tag)
+  prepare-release:
+    name: Prepare Release (get version from tag)
     if: startsWith(github.ref, 'refs/tags/v')
+    needs: [code-analysis]
     runs-on: ubuntu-latest
     timeout-minutes: 2
     steps:
@@ -112,15 +103,34 @@ jobs:
       run: |
         $ref = "${env:GITHUB_REF}"
         $version = $ref.Substring($ref.LastIndexOf("/") + 2)
-        echo "version=${version}" | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf-8 -Append 
         echo "::set-output name=version::${version}"
       shell: pwsh
+
+    - name: Generate changelog
+      id: changelog
+      uses: metcalfc/changelog-generator@v3.0.0
+      with:
+        myToken: ${{ secrets.GITHUB_TOKEN }}
+        head-ref: '${{ github.ref }}'
+        base-ref: 'main'
+
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@latest
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: Release ${{ github.ref }}
+        body: ${{ steps.changelog.outputs.changelog }}
+        draft: false
+        prerelease: false
     outputs:
       version: ${{ steps.GetBuildVersion.outputs.version }}
 
   publish:
     name: Create deploy package
-    needs: [prepare, code-analysis]
+    needs: [prepare-release]
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -131,16 +141,12 @@ jobs:
         dotnet-version: 6.0.x
     - name: Add Nuget Feed
       run:  dotnet nuget add source ${{ secrets.GITHUBNUGETURL }} -n github -u ${{ secrets.GITHUBUSER }} -p ${{ secrets.GITHUBREADPACKAGES }} --store-password-in-clear-text
-    - name: Set Version
-      run: |
-        version=`echo ${{needs.prepare.outputs.version}}`
-        echo "version=$version" >> $GITHUB_ENV
     - name: Set version in CloudFormation
       working-directory: ./src/TheWorkBook.Backend.API
-      run: find *.template -type f -exec sed -i ''s/#{ReleaseVersion}#/v${{ env.version }}/g'' {} \;
+      run: find *.template -type f -exec sed -i ''s/#{ReleaseVersion}#/v${{needs.prepare.outputs.version}}/g'' {} \;
     - name: Set version in aws-lambda-tools-defaults
       working-directory: ./src/TheWorkBook.Backend.API
-      run: find aws-lambda-tools-defaults.json -type f -exec sed -i ''s/#{ReleaseVersion}#/${{ env.version }}/g'' {} \;
+      run: find aws-lambda-tools-defaults.json -type f -exec sed -i ''s/#{ReleaseVersion}#/${{needs.prepare.outputs.version}}/g'' {} \;
     - name: Create Output Directories
       run: |
         cd "${env:GITHUB_WORKSPACE}"
@@ -152,19 +158,26 @@ jobs:
     - name: Publish
       run: |
         dotnet build --configuration Release --no-restore
-        dotnet publish Publish.slnf --output ${env:GITHUB_WORKSPACE}/output/published -p:Version=${env:version} --configuration Release --framework "net6.0" --runtime linux-arm64 /p:GenerateRuntimeConfigurationFiles=true /p:PublishReadyToRun=true /p:TieredCompilation=false /p:TieredCompilationQuickJit=false --self-contained false     
+        dotnet publish Publish.slnf --output ${env:GITHUB_WORKSPACE}/output/published `
+          -p:Version=${{needs.prepare.outputs.version}} `
+          --configuration Release --framework "net6.0" --runtime linux-arm64 --self-contained false `
+          -p:GenerateRuntimeConfigurationFiles=true -p:PublishReadyToRun=true `
+          -p:TieredCompilation=false -p:TieredCompilationQuickJit=false      
       shell: pwsh          
     - name: Zip up files
       run:  |
-        Compress-Archive -Path "${env:GITHUB_WORKSPACE}/output/published/*" -CompressionLevel Optimal -DestinationPath "${env:GITHUB_WORKSPACE}/output/artifact/LambdaDeploy.zip"
+        Compress-Archive -Path "${env:GITHUB_WORKSPACE}/output/published/*" -CompressionLevel Optimal `
+          -DestinationPath "${env:GITHUB_WORKSPACE}/output/artifact/LambdaDeploy.zip"
       shell: pwsh
     - name: Copy CloudFormation template into package
       run:  |
-        Copy-Item -Path "${env:GITHUB_WORKSPACE}/src/*/serverless.template" -Destination "${env:GITHUB_WORKSPACE}/output/artifact/serverless.template"
+        Copy-Item -Path "${env:GITHUB_WORKSPACE}/src/*/serverless.template" `
+          -Destination "${env:GITHUB_WORKSPACE}/output/artifact/serverless.template"
       shell: pwsh
     - name: Copy aws-lambda-tools-defaults into package
       run:  |
-        Copy-Item -Path "${env:GITHUB_WORKSPACE}/src/*/aws-lambda-tools-defaults.json" -Destination "${env:GITHUB_WORKSPACE}/output/artifact/aws-lambda-tools-defaults.json"
+        Copy-Item -Path "${env:GITHUB_WORKSPACE}/src/*/aws-lambda-tools-defaults.json" `
+          -Destination "${env:GITHUB_WORKSPACE}/output/artifact/aws-lambda-tools-defaults.json"
       shell: pwsh      
     - uses: actions/upload-artifact@v3
       with:
@@ -175,7 +188,7 @@ jobs:
 
   deploy-nuget:
     name: Deploy nugets to GitHub Packages
-    needs: [prepare, publish]
+    needs: [prepare-release, publish]
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -186,21 +199,16 @@ jobs:
         dotnet-version: 6.0.x
     - name: Add Nuget Feed
       run:  dotnet nuget add source ${{ secrets.GITHUBNUGETURL }} -n github -u ${{ secrets.GITHUBUSER }} -p ${{ secrets.GITHUBREADPACKAGES }} --store-password-in-clear-text  
-    - name: Set Version
-      run: |
-        version=`echo ${{needs.prepare.outputs.version}}`
-        echo "version is $version"
-        echo "version=$version" >> $GITHUB_ENV
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
-      run: dotnet build -p:Version=$version --configuration Release --no-restore
+      run: dotnet build -p:Version=${{needs.prepare.outputs.version}} --configuration Release --no-restore
     - name: Publish Nuget
       run: dotnet nuget push **/*.nupkg --api-key ${{ secrets.GITHUBWRITEPACKAGES }} --source ${{ secrets.GITHUBNUGETURL }} 
 
   deploy-staging:
     name: Deploy to AWS Staging
-    needs: [prepare, deploy-nuget]
+    needs: [prepare-release, deploy-nuget]
     runs-on: ubuntu-latest
     timeout-minutes: 20
     environment:
@@ -238,7 +246,7 @@ jobs:
 
   deploy-production:
     name: Deploy to AWS Production
-    needs: [prepare, deploy-staging]
+    needs: [prepare-release, deploy-staging]
     runs-on: ubuntu-latest
     timeout-minutes: 20
     environment:
@@ -269,4 +277,4 @@ jobs:
       run: find *.template -type f -exec sed -i ''s/#{EnvironmentName}#/Production/g'' {} \;
     - name: Deploy to Lambda
       working-directory: ${{ github.workspace }}/output/
-      run: dotnet lambda deploy-serverless --package LambdaDeploy.zip --region eu-west-1 --s3-bucket theworkbook-apps --s3-prefix TheWorkBookApi/ --stack-name TheWorkBookApi --template serverless.template    
+      run: dotnet lambda deploy-serverless --package LambdaDeploy.zip --region eu-west-1 --s3-bucket theworkbook-apps --s3-prefix TheWorkBookApi/ --stack-name TheWorkBookApi --template serverless.template
