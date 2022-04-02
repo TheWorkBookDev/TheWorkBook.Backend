@@ -59,7 +59,7 @@ namespace TheWorkBook.Backend.API.Controllers
 
         [Authorize(Policy = "ext.user.api.policy")]
         [HttpPatch]
-        [ActionName("updateMy")]
+        [ActionName("updateMyInfo")]
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> UpdateMyInfo([FromBody] JsonPatchDocument<UserDto> patchDocUserDto)
