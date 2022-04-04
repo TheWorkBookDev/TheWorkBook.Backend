@@ -244,7 +244,7 @@ jobs:
       run: find *.template -type f -exec sed -i ''s/api.theworkbook.ie/betaapi.theworkbook.ie/g'' {} \;
     - name: Deploy to Lambda
       working-directory: ${{ github.workspace }}/output/
-      run: dotnet lambda deploy-serverless --package LambdaDeploy.zip --region eu-west-1 --s3-bucket theworkbook-apps --s3-prefix TheWorkBookApiStaging/ --stack-name TheWorkBookApiStaging --template serverless.template    
+      run: dotnet lambda deploy-serverless --package LambdaDeploy.zip --region ${{ secrets.AWSREGION }} --s3-bucket ${{ secrets.S3BUCKET }} --s3-prefix ${{ secrets.S3PREFIX }} --stack-name ${{ secrets.DEPLOYMENTSTACK }} --template serverless.template
 
   deploy-production:
     name: Deploy to AWS Production
@@ -279,4 +279,4 @@ jobs:
       run: find *.template -type f -exec sed -i ''s/#{EnvironmentName}#/Production/g'' {} \;
     - name: Deploy to Lambda
       working-directory: ${{ github.workspace }}/output/
-      run: dotnet lambda deploy-serverless --package LambdaDeploy.zip --region eu-west-1 --s3-bucket theworkbook-apps --s3-prefix TheWorkBookApi/ --stack-name TheWorkBookApi --template serverless.template
+      run: dotnet lambda deploy-serverless --package LambdaDeploy.zip --region ${{ secrets.AWSREGION }} --s3-bucket ${{ secrets.S3BUCKET }} --s3-prefix ${{ secrets.S3PREFIX }} --stack-name ${{ secrets.DEPLOYMENTSTACK }} --template serverless.template
