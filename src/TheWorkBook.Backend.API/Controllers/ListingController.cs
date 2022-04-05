@@ -37,7 +37,7 @@ namespace TheWorkBook.Backend.API.Controllers
         [HttpGet]
         [ActionName("get")]
         [Consumes(MediaTypeNames.Application.Json)]
-        [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ListingDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Get(int id)
@@ -53,8 +53,12 @@ namespace TheWorkBook.Backend.API.Controllers
         [ProducesResponseType(typeof(OkObjectResult), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Update([FromBody] JsonPatchDocument<ListingDto> patchDocListingDto)
+        public async Task<IActionResult> Update([FromBody] JsonPatchDocument<ListingDto> patchDocListingDto, int listingId)
         {
+            if (patchDocListingDto == null) return BadRequest();
+
+            await _listingService.UpdateListingAsync(listingId, patchDocListingDto);
+
             return Ok();
         }
     }

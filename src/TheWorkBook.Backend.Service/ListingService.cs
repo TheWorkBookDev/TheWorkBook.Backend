@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.Extensions.Logging;
 using TheWorkBook.AspNetCore.IdentityModel;
 using TheWorkBook.Backend.Data;
@@ -29,6 +30,23 @@ namespace TheWorkBook.Backend.Service
         {
             Listing listing = await TheWorkBookContext.Listings.FindAsync(id);
             return Mapper.Map<ListingDto>(listing);
+        }
+
+        public async Task UpdateListingAsync(int listingId, JsonPatchDocument<ListingDto> patchDocCateogryDto)
+        {
+            JsonPatchDocument<Listing> patchDocument = Mapper.Map<JsonPatchDocument<Listing>>(patchDocCateogryDto);
+
+            // We need to identify what fields in the UserDto object cannot be updated here.
+            var uneditablePaths = new List<string> { "/RecordCreatedUtc" };
+
+            if (patchDocument.Operations.Any(operation => uneditablePaths.Contains(operation.path)))
+            {
+                throw new UnauthorizedAccessException();
+            }
+
+            Model.Listing category = await TheWorkBookContext.Listings.FindAsync(listingId);
+            patchDocument.ApplyTo(category);
+            await TheWorkBookContext.SaveChangesAsync();
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using TheWorkBook.Shared.Dto;
+﻿using Microsoft.AspNetCore.JsonPatch;
+using TheWorkBook.Shared.Dto;
 
 namespace TheWorkBook.Backend.Service.Abstraction
 {
@@ -6,5 +7,6 @@ namespace TheWorkBook.Backend.Service.Abstraction
     {
         Task AddListingAsync(ListingDto listingDto);
         Task<ListingDto> GetListingAsync(int id);
+        Task UpdateListingAsync(int listingId, JsonPatchDocument<ListingDto> patchDocCateogryDto);
     }
 }

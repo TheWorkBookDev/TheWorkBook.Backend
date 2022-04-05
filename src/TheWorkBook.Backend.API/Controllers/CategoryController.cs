@@ -67,8 +67,12 @@ namespace TheWorkBook.Backend.API.Controllers
         [ProducesResponseType(typeof(OkObjectResult), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Update([FromBody] JsonPatchDocument<CategoryDto> patchDocListingDto)
+        public async Task<IActionResult> Update([FromBody] JsonPatchDocument<CategoryDto> patchDocCategoryDto, int categoryId)
         {
+            if(patchDocCategoryDto == null) return BadRequest();
+
+            await _categoryService.UpdateCategoryAsync(categoryId, patchDocCategoryDto);
+
             return Ok();
         }
     }
