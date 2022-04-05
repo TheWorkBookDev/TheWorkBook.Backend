@@ -25,13 +25,13 @@ namespace TheWorkBook.Backend.Service
         {
             IQueryable<Listing> listingsQuery = TheWorkBookContext.Listings.AsNoTracking().AsQueryable();
 
-            if (searchRequest.Categories.Any())
+            if (searchRequest.Categories != null && searchRequest.Categories.Any())
             {
                 // Filter by category
                 listingsQuery = listingsQuery.Where(l => searchRequest.Categories.Contains(l.CategoryId));
             }
 
-            if (searchRequest.Locations.Any())
+            if (searchRequest.Locations != null && searchRequest.Locations.Any())
             {
                 // Filter by location
                 listingsQuery = listingsQuery.Where(l => searchRequest.Locations.Contains(l.LocationId));
