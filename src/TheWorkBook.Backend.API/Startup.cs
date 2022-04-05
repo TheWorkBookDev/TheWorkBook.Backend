@@ -21,6 +21,7 @@ namespace TheWorkBook.Backend.API
     {
         private readonly IEnvVariableHelper _envVariableHelper;
         readonly bool traceEnabled = false;
+        
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -34,6 +35,7 @@ namespace TheWorkBook.Backend.API
         }
 
         public static IConfiguration Configuration { get; private set; }
+        
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
@@ -83,6 +85,7 @@ namespace TheWorkBook.Backend.API
             // Register Services
             services.AddTransient<ICategoryService, CategoryService>();
             services.AddTransient<IListingService, ListingService>();
+            services.AddTransient<ISearchService, SearchService>();
             services.AddTransient<IUserService, UserService>();
 
             //DB Connection

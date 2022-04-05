@@ -39,10 +39,10 @@ namespace TheWorkBook.Backend.Service
                 categoryQuery = categoryQuery.Where(cat => cat.ParentCategoryId == parentCategoryId);
             }
 
-            // TODO: Add SortOrder column
-            categoryQuery = categoryQuery.OrderBy(cat => cat.CategoryName);
+            categoryQuery = categoryQuery.OrderBy(cat => cat.SortOrder)
+                .ThenBy(cat => cat.CategoryName);
 
-            List<Model.Category> categories = await categoryQuery.ToListAsync();
+            List<Category> categories = await categoryQuery.ToListAsync();
 
             List<CategoryDto> categoryDtos = Mapper.Map<List<CategoryDto>>(categories);
 

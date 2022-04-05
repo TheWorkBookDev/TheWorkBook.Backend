@@ -94,10 +94,6 @@ namespace TheWorkBook.Backend.Data
                     .HasPrecision(0)
                     .HasDefaultValueSql("(sysutcdatetime())");
             });
-
-            OnModelCreatingPartial(modelBuilder);
         }
-
-        partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
     }
 }

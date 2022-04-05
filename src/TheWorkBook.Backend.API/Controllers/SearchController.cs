@@ -16,13 +16,13 @@ namespace TheWorkBook.Backend.API.Controllers
     [Route("v{version:apiVersion}/search/[action]")]
     public class SearchController : BaseController
     {
-        readonly IListingService _listingService;
+        readonly ISearchService _searchService;
 
         public SearchController(ILogger<SearchController> logger,
             IEnvVariableHelper envVariableHelper,
-            IListingService listingService) : base(logger, envVariableHelper)
+            ISearchService searchService) : base(logger, envVariableHelper)
         {
-            _listingService = listingService;
+            _searchService = searchService;
         }
 
         [AllowAnonymous]
@@ -34,7 +34,7 @@ namespace TheWorkBook.Backend.API.Controllers
         [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Search(SearchRequest searchRequest)
         {
-            SearchResponse response = new();
+            SearchResponse response = await _searchService.SearchListings(searchRequest);
             return Ok(response);
         }
     }
