@@ -79,12 +79,12 @@ namespace TheWorkBook.Backend.API
                 .PersistKeysToAWSSystemsManager($"/DataProtection");
 
             services.AddTransient<IEnvVariableHelper, EnvVariableHelper>();
-
             services.AddScoped<IApplicationUser, ApplicationUser>();
 
             // Register Services
             services.AddTransient<ICategoryService, CategoryService>();
             services.AddTransient<IListingService, ListingService>();
+            services.AddTransient<ILocationService, LocationService>();
             services.AddTransient<ISearchService, SearchService>();
             services.AddTransient<IUserService, UserService>();
 
@@ -197,18 +197,16 @@ namespace TheWorkBook.Backend.API
                     if (env.IsDevelopment())
                     {
                         servers.Add(new OpenApiServer { Url = "https://localhost:62129" });
-                        servers.Add(new OpenApiServer { Url = "https://api.theworkbook.ie" });
                     }
-                    else
-                    {
-                        servers.Add(new OpenApiServer { Url = "https://api.theworkbook.ie" });
-                    }
+
+                    servers.Add(new OpenApiServer { Url = "https://api.theworkbook.ie" });
+                    servers.Add(new OpenApiServer { Url = "https://betaapi.theworkbook.ie" });
 
                     swagger.Servers = servers;
                 });
             });
 
-            Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIOptions swaggerUIOptions = new Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIOptions();
+            Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIOptions swaggerUIOptions = new();
             swaggerUIOptions.SwaggerEndpoint("v1/swagger.json", "TheWorkBook API v1");
             swaggerUIOptions.DisplayRequestDuration();
 
