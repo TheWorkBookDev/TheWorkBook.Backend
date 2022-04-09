@@ -10,6 +10,8 @@ namespace TheWorkBook.Backend.Data
     {
         public virtual DbSet<Category> Categories { get; set; }
         public virtual DbSet<Listing> Listings { get; set; }
+        public virtual DbSet<ListingComment> ListingComments { get; set; }
+        public virtual DbSet<ListingImage> ListingImages { get; set; }
         public virtual DbSet<Location> Locations { get; set; }
         public virtual DbSet<User> Users { get; set; }
 
@@ -68,6 +70,50 @@ namespace TheWorkBook.Backend.Data
                     .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Listing_User");
+            });
+
+            modelBuilder.Entity<ListingComment>(entity =>
+            {
+                entity.Property(e => e.ListingCommentId).ValueGeneratedNever();
+
+                entity.Property(e => e.RecordCreatedUtc)
+                    .HasPrecision(0)
+                    .HasDefaultValueSql("(sysutcdatetime())");
+
+                entity.Property(e => e.RecordUpdatedUtc)
+                    .HasPrecision(0)
+                    .HasDefaultValueSql("(sysutcdatetime())");
+
+                entity.HasOne(d => d.Listing)
+                    .WithMany(p => p.ListingComments)
+                    .HasForeignKey(d => d.ListingId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_ListingComment_Listing");
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.ListingComments)
+                    .HasForeignKey(d => d.UserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_ListingComment_User");
+            });
+
+            modelBuilder.Entity<ListingImage>(entity =>
+            {
+                entity.Property(e => e.RecordCreatedUtc)
+                    .HasPrecision(0)
+                    .HasDefaultValueSql("(sysutcdatetime())");
+
+                entity.Property(e => e.RecordUpdatedUtc)
+                    .HasPrecision(0)
+                    .HasDefaultValueSql("(sysutcdatetime())");
+
+                entity.Property(e => e.StatusId).HasDefaultValueSql("((1))");
+
+                entity.HasOne(d => d.Listing)
+                    .WithMany(p => p.ListingImages)
+                    .HasForeignKey(d => d.ListingId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_ListingImage_Listing");
             });
 
             modelBuilder.Entity<Location>(entity =>

@@ -9,6 +9,12 @@ namespace TheWorkBook.Backend.Model
     [Table("Listing")]
     public partial class Listing
     {
+        public Listing()
+        {
+            ListingComments = new HashSet<ListingComment>();
+            ListingImages = new HashSet<ListingImage>();
+        }
+
         [Key]
         public int ListingId { get; set; }
         public int CategoryId { get; set; }
@@ -34,5 +40,9 @@ namespace TheWorkBook.Backend.Model
         [ForeignKey(nameof(UserId))]
         [InverseProperty("Listings")]
         public virtual User User { get; set; }
+        [InverseProperty(nameof(ListingComment.Listing))]
+        public virtual ICollection<ListingComment> ListingComments { get; set; }
+        [InverseProperty(nameof(ListingImage.Listing))]
+        public virtual ICollection<ListingImage> ListingImages { get; set; }
     }
 }

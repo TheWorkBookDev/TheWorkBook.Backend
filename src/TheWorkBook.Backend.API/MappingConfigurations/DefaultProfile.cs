@@ -13,10 +13,15 @@ namespace TheWorkBook.Backend.API.MappingConfigurations
             CreateMap<UserDto, User>();
             CreateMap<CreateUserRequest, User>();
 
+            CreateMap<ListingImage, ListingImageDto>();
+            CreateMap<ListingComment, ListingCommentDto>();
+
             CreateMap<Listing, ListingDto>();
             CreateMap<ListingDto, Listing>();
 
             CreateMap<Category, CategoryDto>();
+
+            CreateMap<Location, LocationDto>();
         }
     }
 }

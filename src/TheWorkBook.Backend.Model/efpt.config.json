@@ -22,6 +22,14 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[ListingComment]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[ListingImage]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[Location]",
          "ObjectType": 0
       },

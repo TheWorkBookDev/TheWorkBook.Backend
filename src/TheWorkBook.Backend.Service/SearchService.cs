@@ -47,7 +47,7 @@ namespace TheWorkBook.Backend.Service
             {
                 Listings = listingDtos
             };
-            
+
             return searchResponse;
         }
     }

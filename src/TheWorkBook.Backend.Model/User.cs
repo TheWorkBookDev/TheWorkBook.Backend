@@ -11,6 +11,7 @@ namespace TheWorkBook.Backend.Model
     {
         public User()
         {
+            ListingComments = new HashSet<ListingComment>();
             Listings = new HashSet<Listing>();
         }
 
@@ -36,6 +37,8 @@ namespace TheWorkBook.Backend.Model
         [Precision(0)]
         public DateTime RecordUpdatedUtc { get; set; }
 
+        [InverseProperty(nameof(ListingComment.User))]
+        public virtual ICollection<ListingComment> ListingComments { get; set; }
         [InverseProperty(nameof(Listing.User))]
         public virtual ICollection<Listing> Listings { get; set; }
     }
