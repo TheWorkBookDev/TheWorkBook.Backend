@@ -60,7 +60,7 @@ namespace TheWorkBook.Backend.Service
         {
             JsonPatchDocument<Category> patchDocument = Mapper.Map<JsonPatchDocument<Category>>(patchDocCateogryDto);
 
-            // We need to identify what fields in the UserDto object cannot be updated here.
+            // We need to identify what fields in the CategoryDto object cannot be updated here.
             var uneditablePaths = new List<string> { "/RecordCreatedUtc" };
 
             if (patchDocument.Operations.Any(operation => uneditablePaths.Contains(operation.path)))

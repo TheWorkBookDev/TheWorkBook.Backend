@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using TheWorkBook.AspNetCore.IdentityModel;
 using TheWorkBook.Backend.Data;
@@ -28,7 +29,8 @@ namespace TheWorkBook.Backend.Service
 
         public async Task<ListingDto> GetListingAsync(int id)
         {
-            Listing listing = await TheWorkBookContext.Listings.FindAsync(id);
+            IQueryable<Listing> listingQuery = GetListingQuery();
+            Listing listing = await listingQuery.FirstOrDefaultAsync(l => l.ListingId == id);
             return Mapper.Map<ListingDto>(listing);
         }
 
@@ -47,6 +49,18 @@ namespace TheWorkBook.Backend.Service
             Model.Listing category = await TheWorkBookContext.Listings.FindAsync(listingId);
             patchDocument.ApplyTo(category);
             await TheWorkBookContext.SaveChangesAsync();
+        }
+
+        private IQueryable<Listing> GetListingQuery()
+        {
+            IQueryable<Listing> listingQuery = TheWorkBookContext.Listings
+               .AsNoTracking().Include(l => l.Location)
+               .Include(l => l.Category)
+               .Include(l => l.ListingComments)
+               .Include(l => l.ListingComments)
+               .Include(l => l.ListingImages)
+               .AsQueryable();
+            return listingQuery;
         }
     }
 }
