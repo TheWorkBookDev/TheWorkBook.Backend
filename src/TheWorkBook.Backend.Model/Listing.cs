@@ -21,6 +21,9 @@ namespace TheWorkBook.Backend.Model
         public int UserId { get; set; }
         public int LocationId { get; set; }
         [Required]
+        [StringLength(200)]
+        public string Title { get; set; }
+        [Required]
         [StringLength(2000)]
         public string MainDescription { get; set; }
         [Column(TypeName = "money")]
