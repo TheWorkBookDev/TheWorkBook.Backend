@@ -23,7 +23,13 @@ namespace TheWorkBook.Backend.Service
 
         public async Task<SearchResponse> SearchListings(SearchRequest searchRequest)
         {
-            IQueryable<Listing> listingsQuery = TheWorkBookContext.Listings.AsNoTracking().AsQueryable();
+            IQueryable<Listing> listingsQuery = TheWorkBookContext.Listings
+                .AsNoTracking().Include(l => l.Location)
+                .Include(l => l.Category)
+                .Include(l => l.ListingComments)
+                .Include(l => l.ListingComments)
+                .Include(l => l.ListingImages)
+                .AsQueryable();
 
             if (searchRequest.Categories != null && searchRequest.Categories.Any())
             {
