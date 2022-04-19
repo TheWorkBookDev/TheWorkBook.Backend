@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using TheWorkBook.AspNetCore.IdentityModel;
 using TheWorkBook.Backend.Service.Abstraction;
 using TheWorkBook.Shared.Dto;
 using TheWorkBook.Utils.Abstraction;
@@ -27,9 +28,9 @@ namespace TheWorkBook.Backend.API.Controllers
         [ProducesResponseType(typeof(OkObjectResult), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Add(ListingDto listingDto)
+        public async Task<IActionResult> Add([FromServices]IApplicationUser applicationUser, NewListingDto listingDto)
         {
-            await _listingService.AddListingAsync(listingDto);
+            await _listingService.AddListingAsync(applicationUser.UserId.Value, listingDto);
             return Ok(listingDto);  // Need to return the id of the listing.
         }
 

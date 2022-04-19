@@ -5,7 +5,7 @@ namespace TheWorkBook.Backend.Service.Abstraction
 {
     public interface IListingService
     {
-        Task AddListingAsync(ListingDto listingDto);
+        Task AddListingAsync(int userId, NewListingDto listingDto);
         Task<ListingDto> GetListingAsync(int id);
         Task UpdateListingAsync(int listingId, JsonPatchDocument<ListingDto> patchDocCateogryDto);
     }

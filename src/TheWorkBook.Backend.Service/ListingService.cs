@@ -20,9 +20,10 @@ namespace TheWorkBook.Backend.Service
         )
             : base(mapper, logger, applicationUser, envVariableHelper, theWorkBookContext) { }
 
-        public async Task AddListingAsync(ListingDto listingDto)
+        public async Task AddListingAsync(int userId, NewListingDto listingDto)
         {
             Listing listing = Mapper.Map<Listing>(listingDto);
+            listing.UserId = userId;
             TheWorkBookContext.Listings.Add(listing);
             await TheWorkBookContext.SaveChangesAsync();
         }
