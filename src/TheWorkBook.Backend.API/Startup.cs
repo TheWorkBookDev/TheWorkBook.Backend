@@ -97,7 +97,7 @@ namespace TheWorkBook.Backend.API
 
             services.AddHttpContextAccessor();
 
-            services.AddControllers();
+            services.AddControllers().AddNewtonsoftJson();
 
             services.AddApiVersioning(options =>
             {
