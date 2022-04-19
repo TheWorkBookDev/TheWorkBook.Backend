@@ -51,5 +51,12 @@ namespace TheWorkBook.Backend.Service
             patchDocument.ApplyTo(userToUpdate);
             await TheWorkBookContext.SaveChangesAsync();
         }
+
+        public async Task UpdateUserAsync(int userId, UserDto userDto)
+        {
+            User userToUpdate = TheWorkBookContext.Users.Find(userId);
+            Mapper.Map(userDto, userToUpdate);
+            await TheWorkBookContext.SaveChangesAsync();
+        }
     }
 }

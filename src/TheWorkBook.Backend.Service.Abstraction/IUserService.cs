@@ -10,5 +10,7 @@ namespace TheWorkBook.Backend.Service.Abstraction
         Task RegisterUser(CreateUserRequest createUserRequest);
 
         Task UpdateUserAsync(int userId, JsonPatchDocument<UserDto> patchDocUserDto);
+
+        Task UpdateUserAsync(int userId, UserDto userDto);
     }
 }

@@ -67,5 +67,19 @@ namespace TheWorkBook.Backend.API.Controllers
 
             return Ok();
         }
+
+        [Authorize(Policy = "ext.user.api.policy")]
+        [HttpPost]
+        [ActionName("updateMyInfo")]
+        [Consumes(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> UpdateMyInfo([FromBody]UserDto userDto)
+        {
+            if (userDto == null) return BadRequest();
+
+            await _userService.UpdateUserAsync(_applicationUser.UserId.Value, userDto);
+
+            return Ok();
+        }
     }
 }
