@@ -189,7 +189,6 @@ namespace TheWorkBook.Backend.API
 
             app.UseSwagger(options =>
             {
-                //Workaround to use the Swagger UI "Try Out" functionality when deployed behind a reverse proxy (APIM) with API prefix /sub context configured
                 options.PreSerializeFilters.Add((swagger, httpReq) =>
                 {
                     List<OpenApiServer> servers = new();
