@@ -41,6 +41,7 @@
         /// <param name="builder"></param>
         protected override void Init(IHostBuilder builder)
         {
+            base.Init(builder);
         }
     }
 }

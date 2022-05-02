@@ -1,15 +1,9 @@
 ﻿using System.Net.Mime;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using TheWorkBook.Backend.Service.Abstraction;
-using TheWorkBook.Shared.Dto;
 using TheWorkBook.Shared.ServiceModels;
 using TheWorkBook.Utils.Abstraction;
-
 
 namespace TheWorkBook.Backend.API.Controllers
 {
