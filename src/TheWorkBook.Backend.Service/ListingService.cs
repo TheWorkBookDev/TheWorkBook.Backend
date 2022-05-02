@@ -24,6 +24,9 @@ namespace TheWorkBook.Backend.Service
         {
             Listing listing = Mapper.Map<Listing>(listingDto);
             listing.UserId = userId;
+            listing.StatusId = 1;   // Active
+            listing.RecordCreatedUtc = DateTime.UtcNow;
+            listing.RecordUpdatedUtc = DateTime.UtcNow;
             TheWorkBookContext.Listings.Add(listing);
             await TheWorkBookContext.SaveChangesAsync();
         }
