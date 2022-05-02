@@ -28,7 +28,8 @@ namespace TheWorkBook.Backend.API.Controllers
         [ProducesResponseType(typeof(OkObjectResult), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Add([FromServices]IApplicationUser applicationUser, NewListingDto listingDto)
+        public async Task<IActionResult> Add([FromServices]IApplicationUser applicationUser, 
+            [FromBody]NewListingDto listingDto)
         {
             await _listingService.AddListingAsync(applicationUser.UserId.Value, listingDto);
             return Ok(listingDto);  // Need to return the id of the listing.
