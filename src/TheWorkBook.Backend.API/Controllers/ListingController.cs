@@ -52,7 +52,7 @@ namespace TheWorkBook.Backend.API.Controllers
         [HttpGet]
         [ActionName("getMyListings")]
         [Consumes(MediaTypeNames.Application.Json)]
-        [ProducesResponseType(typeof(ListingDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(IEnumerable<ListingDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetMyListings()
