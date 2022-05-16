@@ -38,6 +38,15 @@ namespace TheWorkBook.Backend.Service
             return Mapper.Map<ListingDto>(listing);
         }
 
+        public async Task<IEnumerable<ListingDto>> GetMyListingsAsync()
+        {
+            IQueryable<Listing> listingQuery = GetListingQuery();
+            List<Listing> listing = await listingQuery
+                .Where(l => l.UserId == ApplicationUser.UserId)
+                .ToListAsync();
+            return Mapper.Map<IEnumerable<ListingDto>>(listing);
+        }
+
         public async Task UpdateListingAsync(int listingId, JsonPatchDocument<ListingDto> patchDocCateogryDto)
         {
             JsonPatchDocument<Listing> patchDocument = Mapper.Map<JsonPatchDocument<Listing>>(patchDocCateogryDto);

@@ -44,8 +44,21 @@ namespace TheWorkBook.Backend.API.Controllers
         [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Get(int id)
         {
-            var listingDto = await _listingService.GetListingAsync(id);
+            ListingDto listingDto = await _listingService.GetListingAsync(id);
             return Ok(listingDto);
+        }
+
+        [Authorize(Policy = "ext.user.api.policy")]
+        [HttpGet]
+        [ActionName("getMyListings")]
+        [Consumes(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(typeof(ListingDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetMyListings()
+        {
+            IEnumerable<ListingDto> listings = await _listingService.GetMyListingsAsync();
+            return Ok(listings);
         }
 
         [Authorize(Policy = "ext.user.api.policy")]
