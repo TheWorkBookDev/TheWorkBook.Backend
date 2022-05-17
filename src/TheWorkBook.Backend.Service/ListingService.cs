@@ -59,8 +59,15 @@ namespace TheWorkBook.Backend.Service
                 throw new UnauthorizedAccessException();
             }
 
-            Model.Listing category = await TheWorkBookContext.Listings.FindAsync(listingId);
-            patchDocument.ApplyTo(category);
+            Model.Listing listing = await TheWorkBookContext.Listings.FindAsync(listingId);
+            patchDocument.ApplyTo(listing);
+            await TheWorkBookContext.SaveChangesAsync();
+        }
+
+        public async Task UpdateListingAsync(ListingDto listingDto)
+        {
+            Model.Listing listing = await TheWorkBookContext.Listings.FindAsync(listingDto.ListingId);
+            Mapper.Map(listingDto, listing);
             await TheWorkBookContext.SaveChangesAsync();
         }
 

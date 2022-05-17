@@ -68,13 +68,45 @@ namespace TheWorkBook.Backend.API.Controllers
         [ProducesResponseType(typeof(OkObjectResult), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Update([FromBody] JsonPatchDocument<ListingDto> patchDocListingDto, int listingId)
+        public async Task<IActionResult> Update([FromServices] IApplicationUser applicationUser,
+            [FromBody] JsonPatchDocument<ListingDto> patchDocListingDto, int listingId)
         {
             if (patchDocListingDto == null) return BadRequest();
+
+            // Check that user is entitled to update this listing.
+            await CheckUserAuthorized(listingId, applicationUser);
 
             await _listingService.UpdateListingAsync(listingId, patchDocListingDto);
 
             return Ok();
+        }
+
+        [Authorize(Policy = "ext.user.api.policy")]
+        [HttpPost]
+        [ActionName("update")]
+        [Consumes(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(typeof(OkObjectResult), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> Update([FromServices] IApplicationUser applicationUser,
+            [FromBody] ListingDto listingDto)
+        {
+            // Check that user is entitled to update this listing.
+            await CheckUserAuthorized(listingDto.ListingId, applicationUser);
+
+            await _listingService.UpdateListingAsync(listingDto);
+            return Ok();
+        }
+
+        private async Task CheckUserAuthorized(int listingId, IApplicationUser user)
+        {
+            // Check that user is entitled to update this listing.
+            ListingDto listing = await _listingService.GetListingAsync(listingId);
+            
+            if (listing.UserId != user.UserId)
+            {
+                throw new System.Security.SecurityException("User is not authorized to update this listing.");
+            }
         }
     }
 }
