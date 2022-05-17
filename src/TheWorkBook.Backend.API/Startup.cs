@@ -13,6 +13,7 @@ using TheWorkBook.Backend.Service;
 using TheWorkBook.Backend.Service.Abstraction;
 using TheWorkBook.Utils;
 using TheWorkBook.Utils.Abstraction;
+
 using TheWorkBook.Utils.Abstraction.ParameterStore;
 
 namespace TheWorkBook.Backend.API
@@ -36,7 +37,7 @@ namespace TheWorkBook.Backend.API
 
         public static IConfiguration Configuration { get; private set; }
         
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline
+        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             bool useDeveloperExceptionPage = _envVariableHelper.GetVariable<bool>("UseDeveloperExceptionPage");
