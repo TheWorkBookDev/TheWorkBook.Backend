@@ -44,7 +44,7 @@ namespace TheWorkBook.Backend.API.Controllers
         [ProducesResponseType(typeof(OkObjectResult), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Deactivate(int listingId)
+        public async Task<IActionResult> Deactivate([FromBody]int listingId)
         {
             // Check that user is entitled to update this listing.
             await CheckUserAuthorized(listingId, _applicationUser);
