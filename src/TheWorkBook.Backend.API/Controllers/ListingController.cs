@@ -13,12 +13,15 @@ namespace TheWorkBook.Backend.API.Controllers
     public class ListingController : BaseController
     {
         readonly IListingService _listingService;
+        readonly IApplicationUser _applicationUser;
 
         public ListingController(ILogger<ListingController> logger,
             IEnvVariableHelper envVariableHelper,
-            IListingService listingService) : base(logger, envVariableHelper)
+            IListingService listingService,
+            IApplicationUser applicationUser) : base(logger, envVariableHelper)
         {
             _listingService = listingService;
+            _applicationUser = applicationUser;
         }
 
         [Authorize(Policy = "ext.user.api.policy")]
@@ -28,11 +31,26 @@ namespace TheWorkBook.Backend.API.Controllers
         [ProducesResponseType(typeof(OkObjectResult), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Add([FromServices]IApplicationUser applicationUser, 
-            [FromBody]NewListingDto listingDto)
+        public async Task<IActionResult> Add([FromBody]NewListingDto listingDto)
         {
-            await _listingService.AddListingAsync(applicationUser.UserId.Value, listingDto);
+            await _listingService.AddListingAsync(_applicationUser.UserId.Value, listingDto);
             return Ok(listingDto);  // Need to return the id of the listing.
+        }
+
+        [Authorize(Policy = "ext.user.api.policy")]
+        [HttpPost]
+        [ActionName("deactivate")]
+        [Consumes(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(typeof(OkObjectResult), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> Deactivate(int listingId)
+        {
+            // Check that user is entitled to update this listing.
+            await CheckUserAuthorized(listingId, _applicationUser);
+
+            await _listingService.DeactivateListing(listingId);
+            return Ok();
         }
 
         [AllowAnonymous]
@@ -68,13 +86,12 @@ namespace TheWorkBook.Backend.API.Controllers
         [ProducesResponseType(typeof(OkObjectResult), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Update([FromServices] IApplicationUser applicationUser,
-            [FromBody] JsonPatchDocument<ListingDto> patchDocListingDto, int listingId)
+        public async Task<IActionResult> Update([FromBody] JsonPatchDocument<ListingDto> patchDocListingDto, int listingId)
         {
             if (patchDocListingDto == null) return BadRequest();
 
             // Check that user is entitled to update this listing.
-            await CheckUserAuthorized(listingId, applicationUser);
+            await CheckUserAuthorized(listingId, _applicationUser);
 
             await _listingService.UpdateListingAsync(listingId, patchDocListingDto);
 
@@ -88,11 +105,10 @@ namespace TheWorkBook.Backend.API.Controllers
         [ProducesResponseType(typeof(OkObjectResult), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Update([FromServices] IApplicationUser applicationUser,
-            [FromBody] ListingDto listingDto)
+        public async Task<IActionResult> Update([FromBody] ListingDto listingDto)
         {
             // Check that user is entitled to update this listing.
-            await CheckUserAuthorized(listingDto.ListingId, applicationUser);
+            await CheckUserAuthorized(listingDto.ListingId, _applicationUser);
 
             await _listingService.UpdateListingAsync(listingDto);
             return Ok();

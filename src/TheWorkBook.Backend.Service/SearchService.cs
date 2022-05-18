@@ -25,6 +25,7 @@ namespace TheWorkBook.Backend.Service
         {
             IQueryable<Listing> listingsQuery = TheWorkBookContext.Listings
                 .AsNoTracking().Include(l => l.Location)
+                .Where(l=>l.StatusId > 0) // Return active listings only.
                 .Include(l => l.Category)
                 .Include(l => l.ListingComments)
                 .Include(l => l.ListingComments)

@@ -67,7 +67,21 @@ namespace TheWorkBook.Backend.Service
         public async Task UpdateListingAsync(ListingDto listingDto)
         {
             Model.Listing listing = await TheWorkBookContext.Listings.FindAsync(listingDto.ListingId);
-            Mapper.Map(listingDto, listing);
+            
+            listing.Budget = listingDto.Budget;
+            listing.CategoryId = listingDto.CategoryId;
+            listing.MainDescription = listingDto.MainDescription;
+            listing.Title = listingDto.Title;
+            listing.RecordUpdatedUtc = DateTime.UtcNow;
+            listing.StatusId = 1;
+           
+            await TheWorkBookContext.SaveChangesAsync();
+        }
+
+        public async Task DeactivateListing(int listingId)
+        {
+            Model.Listing listing = await TheWorkBookContext.Listings.FindAsync(listingId);
+            listing.StatusId = 0;
             await TheWorkBookContext.SaveChangesAsync();
         }
 
