@@ -14,6 +14,7 @@
         public DateTime RecordCreatedUtc { get; set; }
         public DateTime RecordUpdatedUtc { get; set; }
         public byte StatusId { get; set; }
+        public string Telephone { get; set; }
         public string Title { get; set; }
         public int UserId { get; set; }
     }

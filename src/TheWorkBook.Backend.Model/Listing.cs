@@ -28,6 +28,9 @@ namespace TheWorkBook.Backend.Model
         public string MainDescription { get; set; }
         [Column(TypeName = "money")]
         public decimal Budget { get; set; }
+        [Required]
+        [StringLength(25)]
+        public string Telephone { get; set; }
         public byte StatusId { get; set; }
         [Precision(0)]
         public DateTime RecordCreatedUtc { get; set; }

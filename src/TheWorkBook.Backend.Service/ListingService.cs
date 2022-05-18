@@ -72,6 +72,7 @@ namespace TheWorkBook.Backend.Service
             listing.CategoryId = listingDto.CategoryId;
             listing.MainDescription = listingDto.MainDescription;
             listing.Title = listingDto.Title;
+            listing.Telephone = listingDto.Telephone;
             listing.RecordUpdatedUtc = DateTime.UtcNow;
             listing.StatusId = 1;
            
