@@ -42,7 +42,7 @@ namespace TheWorkBook.Backend.Service
         {
             IQueryable<Listing> listingQuery = GetListingQuery();
             List<Listing> listing = await listingQuery
-                .Where(l => l.UserId == ApplicationUser.UserId)
+                .Where(l => l.UserId == ApplicationUser.UserId && l.StatusId > 0)
                 .ToListAsync();
             return Mapper.Map<IEnumerable<ListingDto>>(listing);
         }
