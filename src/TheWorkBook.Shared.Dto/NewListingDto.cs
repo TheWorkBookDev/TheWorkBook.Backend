@@ -6,6 +6,7 @@
         public int CategoryId { get; set; }
         public int LocationId { get; set; }
         public string MainDescription { get; set; }
+        public string Telephone { get; set; }
         public string Title { get; set; }
     }
 }
